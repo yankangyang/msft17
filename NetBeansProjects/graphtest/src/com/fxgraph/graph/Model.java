@@ -73,17 +73,17 @@ public class Model {
         return allEdges;
     }
 
-    public void addCell(String id, CellType type) {
+    public void addCell(String id, CellType type, SetColor nodeColor) {
 
         switch (type) {
 
         case RECTANGLE:
-            RectangleCell rectangleCell = new RectangleCell(id);
+            RectangleCell rectangleCell = new RectangleCell(id, nodeColor);
             addCell(rectangleCell);
             break;
 
         case TRIANGLE:
-            TriangleCell circleCell = new TriangleCell(id);
+            TriangleCell circleCell = new TriangleCell(id, nodeColor);
             addCell(circleCell);
             break;
 

@@ -65,7 +65,7 @@ public class GraphMain extends Application {
             while(rs.next()){
                 String person_node = rs.getString("name");
                 //String pnodecolor = "RED";
-                model.addCell(person_node, CellType.TRIANGLE);
+                model.addCell(person_node, CellType.TRIANGLE, SetColor.RED);
                 
                 // likes restaurant 
                 String query2 = String.format("SELECT r.name, r.city\n" + 
@@ -78,7 +78,7 @@ public class GraphMain extends Application {
                 while(rs2.next()){
                    String restaurant_node = rs2.getString("name")+ rs2.getString("city");
                    //String nodecolor = "DODGERBLUE";
-                   model.addCell(restaurant_node, CellType.RECTANGLE);
+                   model.addCell(restaurant_node, CellType.RECTANGLE, SetColor.DODGERBLUE);
                    model.addEdge(person_node, restaurant_node);                   
                 }
                 
@@ -93,7 +93,7 @@ public class GraphMain extends Application {
                 while(rs3.next()){
                    String city_node= rs3.getString("name")+ rs3.getString("stateName");
                    //String nodecolor = "PURPLE";
-                   model.addCell(city_node, CellType.RECTANGLE);
+                   model.addCell(city_node, CellType.RECTANGLE, SetColor.PURPLE);
                    model.addEdge(person_node, city_node);                   
                 }
                 
