@@ -55,16 +55,32 @@ public class GraphMain extends Application {
         
             String query1 = "SELECT Person.name FROM Person";
             
+            
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query1);
-           
+         
+            //get the # of people, cities, and restaurants in the database
+            String query_ppl = "SELECT count(p.name) FROM Person p";
+            String query_rest = "SELECT count(r.name) FROM Restaurant r";
+            String query_cities = "SELECT count(c.name) FROM City c";
+            
+            // convert to integer 
+            int num_ppl = Integer.parseInt(query_ppl);
+            int num_rest = Integer.parseInt(query_rest);
+            int num_cities = Integer.parseInt(query_cities);
+            
+            //create arrays for each with size specified in query
+            String[] ppl_list = new String[num_ppl];
+            String[] rest_list = new String[num_rest];
+            String[] city_list = new String[num_cities];
+            
             Model model = graph.getModel();
             graph.beginUpdate();
             
             // add Person node
             while(rs.next()){
                 String person_node = rs.getString("name");
-                //String pnodecolor = "RED";
+                System.out.println(person_node);
                 model.addCell(person_node, CellType.TRIANGLE, SetColor.RED);
                 
                 // likes restaurant 
@@ -77,7 +93,6 @@ public class GraphMain extends Application {
                 
                 while(rs2.next()){
                    String restaurant_node = rs2.getString("name")+ rs2.getString("city");
-                   //String nodecolor = "DODGERBLUE";
                    model.addCell(restaurant_node, CellType.RECTANGLE, SetColor.DODGERBLUE);
                    model.addEdge(person_node, restaurant_node);                   
                 }
@@ -92,14 +107,13 @@ public class GraphMain extends Application {
                 
                 while(rs3.next()){
                    String city_node= rs3.getString("name")+ rs3.getString("stateName");
-                   //String nodecolor = "PURPLE";
                    model.addCell(city_node, CellType.RECTANGLE, SetColor.PURPLE);
                    model.addEdge(person_node, city_node);                   
                 }
                 
-  
-               //model.addEdge("Joe", "Diana"); 
             }
+            
+            //model.addEdge("Joe", "Diana");
             graph.endUpdate();
             
             con.close();
