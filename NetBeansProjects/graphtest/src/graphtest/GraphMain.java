@@ -54,25 +54,36 @@ public class GraphMain extends Application {
             Connection con = DriverManager.getConnection(url);
         
             String query1 = "SELECT Person.name FROM Person";
-            
-            
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query1);
          
             //get the # of people, cities, and restaurants in the database
-            String query_ppl = "SELECT count(p.name) FROM Person p";
-            String query_rest = "SELECT count(r.name) FROM Restaurant r";
-            String query_cities = "SELECT count(c.name) FROM City c";
+            String query_ppl = "SELECT count(p.name) AS 'ppl' FROM Person p";
+            Statement st_ppl = con.createStatement();
+            ResultSet rs_ppl = st_ppl.executeQuery(query_ppl);
+           
+            int num_ppl = rs_ppl.getInt("ppl");
+             System.out.printf("here\n");
+            String query_rest = "SELECT count(r.name) AS 'rest' FROM Restaurant r";
+            Statement st_rest = con.createStatement();
+            ResultSet rs_rest = st_rest.executeQuery(query_rest);
+            int num_rest = rs_rest.getInt("rest");
             
+            String query_cities = "SELECT count(c.name) AS 'city' FROM City c";
+            Statement st_cities = con.createStatement();
+            ResultSet rs_cities = st_cities.executeQuery(query_cities);
+            int num_cities = rs_cities.getInt("city");
             // convert to integer 
-            int num_ppl = Integer.parseInt(query_ppl);
-            int num_rest = Integer.parseInt(query_rest);
-            int num_cities = Integer.parseInt(query_cities);
             
             //create arrays for each with size specified in query
             String[] ppl_list = new String[num_ppl];
             String[] rest_list = new String[num_rest];
             String[] city_list = new String[num_cities];
+            
+            //indicies for next available node
+            int ppl_ind = 0;
+            int rest_ind = 0;
+            int city_ind = 0;
             
             Model model = graph.getModel();
             graph.beginUpdate();
@@ -81,6 +92,10 @@ public class GraphMain extends Application {
             while(rs.next()){
                 String person_node = rs.getString("name");
                 System.out.println(person_node);
+                
+                ppl_list[ppl_ind] = person_node;
+                ppl_ind++;
+                
                 model.addCell(person_node, CellType.TRIANGLE, SetColor.RED);
                 
                 // likes restaurant 
@@ -92,9 +107,17 @@ public class GraphMain extends Application {
                 ResultSet rs2 = st2.executeQuery(query2);
                 
                 while(rs2.next()){
-                   String restaurant_node = rs2.getString("name")+ rs2.getString("city");
-                   model.addCell(restaurant_node, CellType.RECTANGLE, SetColor.DODGERBLUE);
-                   model.addEdge(person_node, restaurant_node);                   
+                    String restaurant_node = rs2.getString("name")+ rs2.getString("city");
+                    if(SearchList.ListSearch(restaurant_node, rest_list)){
+                        model.addEdge(person_node, restaurant_node);   
+                    }
+                    else {
+                        rest_list[rest_ind] = restaurant_node;
+                        rest_ind++;
+                   
+                        model.addCell(restaurant_node, CellType.RECTANGLE, SetColor.DODGERBLUE);
+                        model.addEdge(person_node, restaurant_node);  
+                   }
                 }
                 
                 // lives in city
@@ -106,11 +129,18 @@ public class GraphMain extends Application {
                 ResultSet rs3 = st3.executeQuery(query3);
                 
                 while(rs3.next()){
-                   String city_node= rs3.getString("name")+ rs3.getString("stateName");
-                   model.addCell(city_node, CellType.RECTANGLE, SetColor.PURPLE);
-                   model.addEdge(person_node, city_node);                   
+                    String city_node= rs3.getString("name")+ rs3.getString("stateName");
+                    if(SearchList.ListSearch(city_node, city_list)){
+                        model.addEdge(person_node, city_node);   
+                    }
+                    else {
+                        city_list[city_ind] = city_node;
+                        city_ind++;
+                   
+                        model.addCell(city_node, CellType.RECTANGLE, SetColor.PURPLE);
+                        model.addEdge(person_node, city_node);         
+                    }
                 }
-                
             }
             
             //model.addEdge("Joe", "Diana");
