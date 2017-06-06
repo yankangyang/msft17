@@ -4,10 +4,13 @@
  * and open the template in the editor.
  */
 package graphtest;
+
+
 /**
  *
  * @author Administrator
  */
+import java.util.Objects;
 public class SearchList {
 
     /**
@@ -17,10 +20,12 @@ public class SearchList {
      * @return
      */
     public static boolean ListSearch(String match, String[] list){
+        //System.out.printf(match);
         for (int i = 0; i < list.length; i++){
-            if (list[i].equals(match)){
+            //System.out.printf("%s\n", list[i]);
+            if (Objects.equals(list[i], match)){
                 return true;
-            }
+            }           
         }
         return false;
     }

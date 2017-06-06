@@ -56,24 +56,34 @@ public class GraphMain extends Application {
             String query1 = "SELECT Person.name FROM Person";
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query1);
-         
+
             //get the # of people, cities, and restaurants in the database
-            String query_ppl = "SELECT count(p.name) AS 'ppl' FROM Person p";
+            String query_ppl = "SELECT count(Person.name) AS 'ppl' FROM Person";
             Statement st_ppl = con.createStatement();
             ResultSet rs_ppl = st_ppl.executeQuery(query_ppl);
-           
+            if(!rs_ppl.next()){
+                System.out.printf("Result rsppl set empty\n");
+            }
             int num_ppl = rs_ppl.getInt("ppl");
-             System.out.printf("here\n");
-            String query_rest = "SELECT count(r.name) AS 'rest' FROM Restaurant r";
+            //System.out.printf("NUM PPL: %d%n\n", num_ppl);
+
+            String query_rest = "SELECT count(Restaurant.name) AS 'rest' FROM Restaurant";
             Statement st_rest = con.createStatement();
             ResultSet rs_rest = st_rest.executeQuery(query_rest);
+            if(!rs_rest.next()){
+                System.out.printf("Result rsrest set empty\n");
+            }
             int num_rest = rs_rest.getInt("rest");
+            //System.out.printf("NUM REST: %d%n\n", num_rest);
             
-            String query_cities = "SELECT count(c.name) AS 'city' FROM City c";
+            String query_cities = "SELECT count(City.name) AS 'city' FROM City";
             Statement st_cities = con.createStatement();
             ResultSet rs_cities = st_cities.executeQuery(query_cities);
+            if(!rs_cities.next()){
+                System.out.printf("Result cities set empty\n");
+            }
             int num_cities = rs_cities.getInt("city");
-            // convert to integer 
+            //System.out.printf("NUM CITIES: %d%n\n", num_cities);
             
             //create arrays for each with size specified in query
             String[] ppl_list = new String[num_ppl];
@@ -91,7 +101,7 @@ public class GraphMain extends Application {
             // add Person node
             while(rs.next()){
                 String person_node = rs.getString("name");
-                System.out.println(person_node);
+                System.out.printf(person_node);
                 
                 ppl_list[ppl_ind] = person_node;
                 ppl_ind++;
@@ -107,11 +117,14 @@ public class GraphMain extends Application {
                 ResultSet rs2 = st2.executeQuery(query2);
                 
                 while(rs2.next()){
-                    String restaurant_node = rs2.getString("name")+ rs2.getString("city");
-                    if(SearchList.ListSearch(restaurant_node, rest_list)){
+                    String restaurant_node = rs2.getString("name")+ " " + rs2.getString("city");
+                    //System.out.printf("Restaurant Adding: " + restaurant_node + " \n");
+                    if((rest_ind != 0) && SearchList.ListSearch(restaurant_node, rest_list)){
+                        //System.out.printf("Matched Existing\n");
                         model.addEdge(person_node, restaurant_node);   
                     }
                     else {
+                        //System.out.printf("New Node\n");
                         rest_list[rest_ind] = restaurant_node;
                         rest_ind++;
                    
@@ -130,7 +143,7 @@ public class GraphMain extends Application {
                 
                 while(rs3.next()){
                     String city_node= rs3.getString("name")+ rs3.getString("stateName");
-                    if(SearchList.ListSearch(city_node, city_list)){
+                    if((city_ind != 0) && SearchList.ListSearch(city_node, city_list)){
                         model.addEdge(person_node, city_node);   
                     }
                     else {
