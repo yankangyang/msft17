@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="webviewtry.FXMLDocumentController">
+    <children>
+        <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
+      <WebView fx:id="webView" prefHeight="800.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+      <Button layoutX="27.0" layoutY="853.0" mnemonicParsing="false" onAction="#btn1" prefHeight="25.0" prefWidth="69.0" text="Google" AnchorPane.bottomAnchor="22.0" />
+      <Button layoutX="281.0" layoutY="853.0" mnemonicParsing="false" onAction="#btn5" text="Open Nodes" AnchorPane.bottomAnchor="22.0" />
+      <Button layoutX="108.0" layoutY="853.0" mnemonicParsing="false" onAction="#btn3" text="Hello World" AnchorPane.bottomAnchor="22.0" />
+      <Button layoutX="195.0" layoutY="853.0" mnemonicParsing="false" onAction="#btn4" text="Restaurant" AnchorPane.bottomAnchor="22.0" />
+    </children>
+</AnchorPane>

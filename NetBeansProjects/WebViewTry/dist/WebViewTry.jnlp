@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="graphtest.jnlp">
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="WebViewTry.jnlp">
   <information>
-    <title>graphtest</title>
+    <title>WebViewTry</title>
     <vendor>Administrator</vendor>
     <description>null</description>
     <offline-allowed/>
@@ -11,12 +11,14 @@
   </resources>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="graphtest.jar" size="63184" download="eager" />
+    <jar href="WebViewTry.jar" size="31927" download="eager" />
+    <jar href="lib/json-20170516.jar" size="57264" download="eager" />
+    <jar href="lib/json-simple-1.1.1.jar" size="23931" download="eager" />
     <jar href="lib/sqljdbc41.jar" size="893229" download="eager" />
   </resources>
-  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="graphtest" >
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="WebViewTry" >
     <param name="requiredFXVersion" value="2.2+"/>
   </applet-desc>
-  <jfx:javafx-desc  width="800" height="600" main-class="graphtest.GraphMain"  name="graphtest" />
+  <jfx:javafx-desc  width="800" height="600" main-class="webviewtry.WebViewTry"  name="WebViewTry" />
   <update check="always"/>
 </jnlp>
