@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.web.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -7,13 +10,301 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="webviewtry.FXMLDocumentController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1050.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="webviewtry.FXMLDocumentController">
     <children>
-        <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
-      <WebView fx:id="webView" prefHeight="800.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-      <Button layoutX="27.0" layoutY="853.0" mnemonicParsing="false" onAction="#btn1" prefHeight="25.0" prefWidth="69.0" text="Google" AnchorPane.bottomAnchor="22.0" />
-      <Button layoutX="294.0" layoutY="853.0" mnemonicParsing="false" onAction="#btn5" text="Open Nodes" AnchorPane.bottomAnchor="22.0" />
-      <Button layoutX="108.0" layoutY="853.0" mnemonicParsing="false" onAction="#btn3" text="Cities &gt; 1 ppl" AnchorPane.bottomAnchor="22.0" />
-      <Button layoutX="209.0" layoutY="853.0" mnemonicParsing="false" onAction="#btn4" text="Restaurant" AnchorPane.bottomAnchor="22.0" />
+      <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1050.0" prefWidth="1200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+            <Tab text="Home ">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: MidnightBlue; -fx-border-color: Gold; -fx-border-width: 2px;">
+                     <children>
+                        <Label alignment="CENTER" layoutX="51.0" layoutY="391.0" prefHeight="128.0" prefWidth="1100.0" text="Welcome to SQL Graph Demos" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font name="Segoe UI Semilight" size="55.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="317.0" layoutY="560.0" text="Click one of the scenario tabs below to begin" textFill="#ffdf00">
+                           <font>
+                              <Font name="Segoe UI Light" size="30.0" />
+                           </font>
+                        </Label>
+                        <ImageView fitHeight="165.0" fitWidth="163.0" layoutX="525.0" layoutY="226.0" preserveRatio="true">
+                           <image>
+                              <Image url="@MicrosoftSQLServer2.png" />
+                           </image>
+                        </ImageView>
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+          <Tab text="Bike Shop">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1050.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="Schema">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="1000.0" prefWidth="1200.0">
+                                            <items>
+                                              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="1200.0">
+                                                   <children>
+                                                      <Button layoutX="191.0" layoutY="39.0" mnemonicParsing="false" onAction="#btn4" text="Restaurant" AnchorPane.bottomAnchor="36.0" />
+                                                      <Button layoutX="273.0" layoutY="39.0" mnemonicParsing="false" onAction="#btn3" text="Cities &gt; 1 ppl" AnchorPane.bottomAnchor="36.0" />
+                                                      <Button layoutX="25.0" layoutY="39.0" mnemonicParsing="false" onAction="#btn1" prefHeight="25.0" prefWidth="69.0" text="Schema" AnchorPane.bottomAnchor="36.0" />
+                                                      <Button layoutX="100.0" layoutY="39.0" mnemonicParsing="false" onAction="#btn5" text="Open Nodes" AnchorPane.bottomAnchor="36.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0">
+                                                   <children>
+                                                      <SplitPane dividerPositions="0.29797979797979796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0">
+                                                        <items>
+                                                          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="400.0">
+                                                               <children>
+                                                                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="400.0">
+                                                                    <items>
+                                                                      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="325.0" prefWidth="400.0" />
+                                                                      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="575.0" prefWidth="400.0" />
+                                                                    </items>
+                                                                  </SplitPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                               <children>
+                                                                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="800.0">
+                                                                    <items>
+                                                                      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="800.0">
+                                                                           <children>
+                                                                              <WebView fx:id="webView" prefHeight="750.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="800.0" />
+                                                                    </items>
+                                                                  </SplitPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                        </items>
+                                                      </SplitPane>
+                                                   </children>
+                                                </AnchorPane>
+                                            </items>
+                                          </SplitPane>
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab text="Match 1">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                              </content>
+                            </Tab>
+                              <Tab text="Match 2">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                 </content>
+                              </Tab>
+                              <Tab text="Match 3">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                 </content>
+                              </Tab>
+                              <Tab text="Recursive 1">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                 </content>
+                              </Tab>
+                              <Tab text="Recursive 2">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                 </content>
+                              </Tab>
+                              <Tab text="Shortest Path">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                 </content>
+                              </Tab>
+                          </tabs>
+                        </TabPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Azure Data Center">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: azure;">
+                     <children>
+                        <ImageView fitHeight="434.0" fitWidth="469.0" layoutX="384.0" layoutY="197.0" preserveRatio="true">
+                           <image>
+                              <Image url="@microsoft-azure-logo.png" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="190.0" layoutY="529.0" text="Azure Data Center Build-Out Supply-Chain Scenario Coming Soon!">
+                           <font>
+                              <Font size="28.0" />
+                           </font>
+                        </Label>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Microsoft Supply Chain">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: seashell;">
+                     <children>
+                        <ImageView fitHeight="171.0" fitWidth="397.0" layoutX="402.0" layoutY="357.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@mslogo.png" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="293.0" layoutY="532.0" text="MS Product Supply-Chain Scenario Coming Soon!">
+                           <font>
+                              <Font size="28.0" />
+                           </font>
+                        </Label>
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Tutorial">
+              <content>
+                <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1050.0" prefWidth="1200.0">
+                     <children>
+                        <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1050.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE">
+                           <tabs>
+                              <Tab text="Schema">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="1000.0" prefWidth="1200.0">
+                                             <items>
+                                                <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="1200.0" style="-fx-background-color: black;">
+                                                   <children>
+                                                      <Button alignment="CENTER" layoutX="994.0" layoutY="20.0" mnemonicParsing="false" onAction="#btn1" prefHeight="61.0" prefWidth="192.0" text="Click this button to launch graph visualization" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="19.0" />
+                                                      <Text fill="WHITE" layoutX="14.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Toggle the tabs above for different graph supported queries" textAlignment="CENTER" wrappingWidth="280.13671875">
+                                                         <font>
+                                                            <Font size="18.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Text fill="WHITE" layoutX="482.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SCENARIO" wrappingWidth="236.13671875">
+                                                         <font>
+                                                            <Font size="48.0" />
+                                                         </font>
+                                                      </Text>
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0">
+                                                   <children>
+                                                      <SplitPane dividerPositions="0.29797979797979796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0">
+                                                         <items>
+                                                            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="400.0">
+                                                               <children>
+                                                                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="400.0">
+                                                                     <items>
+                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="325.0" prefWidth="400.0" style="-fx-background-color: FDE9E9;">
+                                                                           <children>
+                                                                              <Text layoutX="82.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="In this pane, you will find a description of the scenario" wrappingWidth="236.13671875">
+                                                                                 <font>
+                                                                                    <Font size="18.0" />
+                                                                                 </font>
+                                                                              </Text>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="555.0" prefWidth="400.0" style="-fx-background-color: #E9F9FD;">
+                                                                           <children>
+                                                                              <Text layoutX="113.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Relevant datasets can be found in this pane" textAlignment="CENTER" wrappingWidth="173.13671875">
+                                                                                 <font>
+                                                                                    <Font size="18.0" />
+                                                                                 </font>
+                                                                              </Text>
+                                                                              <Text layoutX="11.0" layoutY="534.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Toggle the tabs below for different scenarios" textAlignment="CENTER" wrappingWidth="376.13671875">
+                                                                                 <font>
+                                                                                    <Font size="18.0" />
+                                                                                 </font>
+                                                                              </Text>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                     </items>
+                                                                  </SplitPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                               <children>
+                                                                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="800.0">
+                                                                     <items>
+                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="800.0" style="-fx-background-color: #E9FDEC;">
+                                                                           <children>
+                                                                              <Text layoutX="257.0" layoutY="369.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Visualizations and graphs will be in this large pane" textAlignment="CENTER" wrappingWidth="286.13671875">
+                                                                                 <font>
+                                                                                    <Font size="24.0" />
+                                                                                 </font>
+                                                                              </Text>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="800.0" style="-fx-background-color: #FDFCE9;">
+                                                                           <children>
+                                                                              <Text layoutX="313.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SQL Queries will be located here" textAlignment="CENTER" wrappingWidth="173.13671875">
+                                                                                 <font>
+                                                                                    <Font size="18.0" />
+                                                                                 </font>
+                                                                              </Text>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                     </items>
+                                                                  </SplitPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </items>
+                                                      </SplitPane>
+                                                   </children>
+                                                </AnchorPane>
+                                             </items>
+                                          </SplitPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="Query A">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: black;">
+                                       <children>
+                                          <Text fill="WHITE" layoutX="403.0" layoutY="475.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Make sure to launch visualization in scenarios to see the graph!" textAlignment="CENTER" wrappingWidth="394.13671875">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Text>
+                                       </children></AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="Query B">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: black;">
+                                       <children>
+                                          <Text fill="WHITE" layoutX="427.0" layoutY="502.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Blank Example Page" textAlignment="CENTER" wrappingWidth="346.13671875">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Text>
+                                       </children></AnchorPane>
+                                 </content>
+                              </Tab>
+                              <Tab text="Query C">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: black;">
+                                       <children>
+                                          <Text fill="WHITE" layoutX="427.0" layoutY="502.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Blank Example Page" textAlignment="CENTER" wrappingWidth="346.13671875">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Text>
+                                       </children></AnchorPane>
+                                 </content>
+                              </Tab>
+                           </tabs>
+                        </TabPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
     </children>
 </AnchorPane>

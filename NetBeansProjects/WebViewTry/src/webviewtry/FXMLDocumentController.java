@@ -21,6 +21,8 @@ import javafx.scene.web.WebView;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
+ import javafx.scene.image.ImageView;
+
 
 
 
@@ -38,7 +40,8 @@ public class FXMLDocumentController implements Initializable {
     }
 
     public void btn1(ActionEvent event){
-        engine.load("https://www.google.com");
+        URL url = getClass().getResource("index.html");
+        engine.load(url.toExternalForm());
     }
 
     public void btn3(ActionEvent event){
