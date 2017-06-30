@@ -48,12 +48,11 @@
                                        <children>
                                           <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="1000.0" prefWidth="1200.0">
                                             <items>
-                                              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="1200.0" style="-fx-background-color: midnightblue;">
+                                              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="1200.0" style="-fx-background-color: black;">
                                                    <children>
                                                       <Button layoutX="24.0" layoutY="55.0" mnemonicParsing="false" onAction="#btn4" text="Restaurant" AnchorPane.bottomAnchor="20.0" />
                                                       <Button layoutX="110.0" layoutY="38.0" mnemonicParsing="false" onAction="#btn3" text="Cities &gt; 1 ppl" AnchorPane.bottomAnchor="37.0" />
-                                                      <Button layoutX="1072.0" layoutY="34.0" mnemonicParsing="false" onAction="#btn1" prefHeight="33.0" prefWidth="114.0" text="Schema" AnchorPane.bottomAnchor="33.0" />
-                                                      <Text fill="#d4af37" layoutX="250.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bicycle Company Supply-Chain" textAlignment="CENTER" wrappingWidth="699.13671875">
+                                                      <Text fill="WHITE" layoutX="250.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bicycle Company Supply-Chain" textAlignment="CENTER" wrappingWidth="699.13671875">
                                                          <font>
                                                             <Font size="48.0" />
                                                          </font>
@@ -69,7 +68,24 @@
                                                                <children>
                                                                   <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="400.0">
                                                                     <items>
-                                                                      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="325.0" prefWidth="400.0" />
+                                                                      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="325.0" prefWidth="400.0">
+                                                                           <children>
+                                                                              <Label layoutX="9.0" layoutY="59.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="141.0" prefWidth="386.0" text="Adventure Works Bicycle, Inc. is a fictional bicycle wholesaler that manufactures and sells bicycles. Its supply-chain network includes raw material suppliers, customers, bicycle parts, and the company’s employees." wrapText="true">
+                                                                                 <font>
+                                                                                    <Font name="Segoe UI" size="18.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <Label layoutX="7.0" layoutY="193.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="131.0" prefWidth="386.0" text="This scenario demonstrates the usefulness of SQL Server Graph Database in real-world enterprise applications including its multi-hop and hierarchical query abilities." wrapText="true">
+                                                                                 <font>
+                                                                                    <Font name="Segoe UI" size="18.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                              <Label layoutX="141.0" layoutY="14.0" text="Description">
+                                                                                 <font>
+                                                                                    <Font name="Segoe UI" size="24.0" />
+                                                                                 </font>
+                                                                              </Label>
+                                                                           </children></AnchorPane>
                                                                       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="575.0" prefWidth="400.0" />
                                                                     </items>
                                                                   </SplitPane>
@@ -81,7 +97,11 @@
                                                                     <items>
                                                                       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="800.0">
                                                                            <children>
-                                                                              <WebView fx:id="webView" prefHeight="750.0" />
+                                                                              <ImageView fitHeight="687.0" fitWidth="586.0" layoutX="111.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+                                                                                 <image>
+                                                                                    <Image url="@Bike%20Schema.png" />
+                                                                                 </image>
+                                                                              </ImageView>
                                                                            </children>
                                                                         </AnchorPane>
                                                                       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="800.0" />
@@ -101,7 +121,58 @@
                             </Tab>
                             <Tab text="Match 1">
                               <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="1000.0" prefWidth="1200.0">
+                                             <items>
+                                                <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="1200.0" style="-fx-background-color: black;">
+                                                   <children>
+                                                      <Button layoutX="24.0" layoutY="55.0" mnemonicParsing="false" onAction="#btn4" text="Restaurant" AnchorPane.bottomAnchor="20.0" />
+                                                      <Button layoutX="110.0" layoutY="38.0" mnemonicParsing="false" onAction="#btn3" text="Cities &gt; 1 ppl" AnchorPane.bottomAnchor="37.0" />
+                                                      <Button fx:id="webView" layoutX="1060.0" layoutY="34.0" mnemonicParsing="false" onAction="#btn1" prefHeight="33.0" prefWidth="114.0" text="Schema" AnchorPane.bottomAnchor="33.0" />
+                                                      <Text fill="WHITE" layoutX="250.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bicycle Company Supply-Chain" textAlignment="CENTER" wrappingWidth="699.13671875">
+                                                         <font>
+                                                            <Font size="48.0" />
+                                                         </font>
+                                                      </Text>
+                                                      <Button layoutX="14.0" layoutY="22.0" mnemonicParsing="false" onAction="#btn5" text="Open Nodes" AnchorPane.bottomAnchor="53.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0">
+                                                   <children>
+                                                      <SplitPane dividerPositions="0.29797979797979796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0">
+                                                         <items>
+                                                            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="400.0">
+                                                               <children>
+                                                                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="400.0">
+                                                                     <items>
+                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="325.0" prefWidth="400.0" />
+                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="575.0" prefWidth="400.0" />
+                                                                     </items>
+                                                                  </SplitPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                               <children>
+                                                                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="900.0" prefWidth="800.0">
+                                                                     <items>
+                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="800.0">
+                                                                           <children>
+                                                                              <WebView fx:id="webView1" layoutY="-6.0" prefHeight="750.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="800.0" />
+                                                                     </items>
+                                                                  </SplitPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </items>
+                                                      </SplitPane>
+                                                   </children>
+                                                </AnchorPane>
+                                             </items>
+                                          </SplitPane>
+                                       </children></AnchorPane>
                               </content>
                             </Tab>
                               <Tab text="Match 2">
