@@ -1,0 +1,10 @@
+source,target,value
+Part,Supplier,1.2
+Part,Part,1.2
+Supplier,Part,1.2
+Part,Customer,1.2
+Customer,Part,1.2
+Supplier,Employee,1.2
+Customer,Employee,1.2
+Supplier,Location,1.2
+Customer,Location,1.2
