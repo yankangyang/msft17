@@ -225,17 +225,17 @@
                                                                                     <Font name="Segoe UI" size="18.0" />
                                                                                  </font>
                                                                               </Label>
-                                                                              <Label layoutX="29.0" layoutY="14.0" text="MATCH Query: Missing Part">
+                                                                              <Label layoutX="53.0" layoutY="14.0" text="MATCH Query: Missing Part">
                                                                                  <font>
-                                                                                    <Font size="28.0" />
+                                                                                    <Font size="24.0" />
                                                                                  </font>
                                                                               </Label>
-                                                                              <Label layoutX="12.0" layoutY="217.0" prefHeight="108.0" prefWidth="379.0" text="Adventure Works Bicycle, Inc. can use a MATCH query on their SQL graph database to quickly find all suppliers who can to ship the missing part to the customer. " wrapText="true">
+                                                                              <Label layoutX="12.0" layoutY="210.0" prefHeight="108.0" prefWidth="379.0" text="Adventure Works Bicycle, Inc. can use a MATCH query on their SQL graph database to quickly find all suppliers who can to ship the missing part to the customer. " wrapText="true">
                                                                                  <font>
                                                                                     <Font name="Segoe UI" size="18.0" />
                                                                                  </font>
                                                                               </Label>
-                                                                              <Label layoutX="12.0" layoutY="148.0" prefHeight="108.0" prefWidth="379.0" text="They have contacted AWB to replace the parts." textFill="#dd2525" wrapText="true">
+                                                                              <Label layoutX="11.0" layoutY="182.0" prefHeight="28.0" prefWidth="379.0" text="They have contacted AWB to replace the parts." textFill="#dd2525" wrapText="true">
                                                                                  <font>
                                                                                     <Font name="Segoe UI" size="18.0" />
                                                                                  </font>
@@ -244,15 +244,15 @@
                                                                         </AnchorPane>
                                                                         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="575.0" prefWidth="400.0">
                                                                            <children>
-                                                                              <TableView fx:id="tableView" prefHeight="555.0" prefWidth="400.0">
+                                                                              <TableView fx:id="tableViewM1" prefHeight="552.0" prefWidth="400.0">
                                                                                 <columns>
-                                                                                  <TableColumn fx:id="ProductIDColumn" prefWidth="66.0" text="ProductID" />
-                                                                                  <TableColumn fx:id="pNameColumn" prefWidth="98.0" text="Product" />
-                                                                                    <TableColumn fx:id="SupplierIDColumn" prefWidth="78.0" text="SupplierID" />
-                                                                                    <TableColumn fx:id="sNameColumn" prefWidth="92.0" text="Supplier" />
-                                                                                    <TableColumn fx:id="PriceColumn" prefWidth="33.0" text="Price Per" />
-                                                                                    <TableColumn fx:id="MinColumn" prefWidth="75.0" text="MinOrderQty" />
-                                                                                    <TableColumn fx:id="MaxColumn" prefWidth="75.0" text="MaxOrderQty" />
+                                                                                  <TableColumn fx:id="ProductIDColumn" prefWidth="48.0" text="ProdID" />
+                                                                                  <TableColumn fx:id="pNameColumn" prefWidth="95.0" text="Product" />
+                                                                                    <TableColumn fx:id="SupplierIDColumn" prefWidth="53.0" text="SuppID" />
+                                                                                    <TableColumn fx:id="sNameColumn" prefWidth="95.0" text="Supplier" />
+                                                                                    <TableColumn fx:id="PriceColumn" prefWidth="54.0" text="Price Per" />
+                                                                                    <TableColumn fx:id="MinColumn" prefWidth="30.0" text="MinOrderQty" />
+                                                                                    <TableColumn fx:id="MaxColumn" minWidth="0.0" prefWidth="30.0" text="MaxOrderQty" />
                                                                                 </columns>
                                                                               </TableView>
                                                                            </children></AnchorPane>
@@ -316,7 +316,7 @@
                                                                      <items>
                                                                         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="325.0" prefWidth="400.0">
                                                                            <children>
-                                                                              <Label layoutX="12.0" layoutY="77.0" prefHeight="121.0" prefWidth="379.0" text="Two customers, A and B, want to close deals with Adventure Works Bicycle, Inc. but are only allowed to do so in person. Adventure Works Bicycle, Inc. needs to assemble two sales teams and minimize their travel costs" textFill="#dd2525" wrapText="true">
+                                                                              <Label layoutX="12.0" layoutY="77.0" prefHeight="146.0" prefWidth="379.0" text="Two customers, All Cycle Shop and Endurance Bikes, want to close deals with Adventure Works Bicycle, Inc. but are only allowed to do so in person. Adventure Works Bicycle, Inc. needs to assemble two sales teams and minimize their travel costs" textFill="#dd2525" wrapText="true">
                                                                                  <font>
                                                                                     <Font name="Segoe UI" size="18.0" />
                                                                                  </font>
@@ -333,7 +333,20 @@
                                                                               </Label>
                                                                            </children>
                                                                         </AnchorPane>
-                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="575.0" prefWidth="400.0" />
+                                                                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="575.0" prefWidth="400.0">
+                                                                           <children>
+                                                                              <TableView fx:id="tableViewM2" prefHeight="552.0" prefWidth="400.0">
+                                                                                 <columns>
+                                                                                    <TableColumn fx:id="ClientCol" prefWidth="70.0" text="Client" />
+                                                                                    <TableColumn fx:id="NameCol" prefWidth="63.0" text="Name" />
+                                                                                    <TableColumn fx:id="SurnameCol" prefWidth="62.0" text="Surname" />
+                                                                                    <TableColumn fx:id="TitleCol" prefWidth="103.0" text="Title" />
+                                                                                    <TableColumn fx:id="RegionCol" prefWidth="61.0" text="Region" />
+                                                                                    <TableColumn fx:id="CountryCol" prefWidth="48.0" text="Country" />
+                                                                                    <TableColumn fx:id="TerritoryIDCol" minWidth="5.0" prefWidth="37.0" text="Territory" />
+                                                                                 </columns>
+                                                                              </TableView>
+                                                                           </children></AnchorPane>
                                                                      </items>
                                                                   </SplitPane>
                                                                </children>
@@ -345,12 +358,7 @@
                                                                         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="800.0" />
                                                                         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="800.0">
                                                                            <children>
-                                                                              <Label layoutX="14.0" layoutY="14.0" prefHeight="30.0" prefWidth="687.0" text="SQL Query: SELECT * FROM..." wrapText="true">
-                                                                                 <font>
-                                                                                    <Font name="Segoe UI" size="16.0" />
-                                                                                 </font>
-                                                                              </Label>
-                                                                              <Label layoutX="14.0" layoutY="75.0" prefHeight="30.0" prefWidth="687.0" text="Tables Used/Rows Scanned/Time Spent..." wrapText="true">
+                                                                              <Label layoutX="26.0" layoutY="8.0" prefHeight="117.0" prefWidth="687.0" text="  SELECT c.StoreName AS 'Client', e.FirstName, e.LastName, e.JobTitle AS 'Title', e.TerritoryID, l.Name AS 'Region', l.CountryRegionCode AS 'Country'  FROM dbo.Employee e, dbo.Location l, dbo.LocatedIn lin, dbo.Customer c, dbo.LocatedIn lin2  WHERE MATCH (e-(lin)-&gt;l&lt;-(lin2)-c)    AND (c.StoreName = 'Endurance Bikes' OR c.StoreName = 'All Cycle Shop')  ORDER BY c.StoreName" wrapText="true">
                                                                                  <font>
                                                                                     <Font name="Segoe UI" size="16.0" />
                                                                                  </font>

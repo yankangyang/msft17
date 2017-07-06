@@ -27,10 +27,7 @@ import javafx.scene.web.WebView;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
- import javafx.scene.image.ImageView;
-
-
-
+import javafx.scene.image.ImageView;
 
 /**
  *
@@ -40,8 +37,8 @@ public class FXMLDocumentController implements Initializable {
     @FXML private WebView webView;
     private WebEngine engine;
     
-    
-    @FXML private TableView<MissingPart> tableView;
+    // MATCH 1: Missing Part
+    @FXML private TableView<MissingPart> tableViewM1;
     @FXML private TableColumn<MissingPart, Integer> ProductIDColumn;
     @FXML private TableColumn<MissingPart, String>  pNameColumn;
     @FXML private TableColumn<MissingPart, Integer> SupplierIDColumn;
@@ -50,11 +47,21 @@ public class FXMLDocumentController implements Initializable {
     @FXML private TableColumn<MissingPart, Integer> MinColumn;
     @FXML private TableColumn<MissingPart, Integer> MaxColumn;
     
+    //MATCH 2: In-Person Meeting
+    @FXML private TableView<InPersonMeeting> tableViewM2;
+    @FXML private TableColumn<InPersonMeeting, String> ClientCol;
+    @FXML private TableColumn<InPersonMeeting, String>  NameCol;
+    @FXML private TableColumn<InPersonMeeting, String> SurnameCol;
+    @FXML private TableColumn<InPersonMeeting, String>  TitleCol;
+    @FXML private TableColumn<InPersonMeeting, String>   RegionCol;
+    @FXML private TableColumn<InPersonMeeting, String> CountryCol;
+    @FXML private TableColumn<InPersonMeeting, Integer> TerritoryIDCol;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         engine = webView.getEngine();
 
-
+    // MATCH 1: Missing Part    
     ProductIDColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Integer>("ProductID"));
     pNameColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, String>("productName"));
     SupplierIDColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Integer>("BusinessID"));
@@ -62,12 +69,21 @@ public class FXMLDocumentController implements Initializable {
     PriceColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Float>("Price"));
     MinColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Integer>("Min"));
     MaxColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Integer>("Max"));
+    tableViewM1.setItems(getDataM1());
     
-    tableView.setItems(getData());
-            
+    
+    //MATCH 2: In-Person Meeting
+    ClientCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Client"));
+    NameCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Name"));
+    SurnameCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Surname"));
+    TitleCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Title"));
+    RegionCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Region"));
+    CountryCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Country"));
+    TerritoryIDCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, Integer>("TerritoryID"));
+    tableViewM2.setItems(getDataM2());        
     }
     
-    public ObservableList<MissingPart> getData(){
+    public ObservableList<MissingPart> getDataM1(){
         ObservableList<MissingPart> datalist = FXCollections.observableArrayList();
        
         try{
@@ -95,7 +111,35 @@ public class FXMLDocumentController implements Initializable {
         return datalist;
     }
     
-
+        public ObservableList<InPersonMeeting> getDataM2(){
+        ObservableList<InPersonMeeting> datalist = FXCollections.observableArrayList();
+       
+        try{
+            // this is the SQL connection code
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=AdventureWorks2014;integratedSecurity=true";
+            Connection con = DriverManager.getConnection(url);
+            String query1 = "  SELECT c.StoreName AS 'Client', e.FirstName, e.LastName, e.JobTitle AS 'Title', l.Name AS 'Region', l.CountryRegionCode AS 'Country', e.TerritoryID\n" +
+                "  FROM dbo.Employee e, dbo.Location l, dbo.LocatedIn lin, dbo.Customer c, dbo.LocatedIn lin2\n" +
+                "  WHERE MATCH (e-(lin)->l<-(lin2)-c)  \n" +
+                "  AND (c.StoreName = 'Endurance Bikes' OR c.StoreName = 'All Cycle Shop')\n" +
+                "  ORDER BY c.StoreName";
+            
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query1);
+            
+            InPersonMeeting row = null;
+            while(rs.next()){
+                row = new InPersonMeeting(rs.getString("Client"), rs.getString("FirstName"), rs.getString("LastName"), rs.getString("Title"), rs.getString("Region"), rs.getString("Country"), rs.getInt("TerritoryID"));
+                datalist.add(row);
+            }
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }   
+        return datalist;
+    }
+    
     public void btn1(ActionEvent event){
         //--------------------------------------------
             try{
