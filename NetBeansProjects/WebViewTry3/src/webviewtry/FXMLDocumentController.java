@@ -11,23 +11,20 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import javafx.scene.image.ImageView;
+ import javafx.scene.image.ImageView;
+
+
+
 
 /**
  *
@@ -37,180 +34,12 @@ public class FXMLDocumentController implements Initializable {
     @FXML private WebView webView;
     private WebEngine engine;
     
-    // MATCH 1: Missing Part
-    @FXML private TableView<MissingPart> tableViewM1;
-    @FXML private TableColumn<MissingPart, Integer> ProductIDColumn;
-    @FXML private TableColumn<MissingPart, String>  pNameColumn;
-    @FXML private TableColumn<MissingPart, Integer> SupplierIDColumn;
-    @FXML private TableColumn<MissingPart, String>  sNameColumn;
-    @FXML private TableColumn<MissingPart, Float>   PriceColumn;
-    @FXML private TableColumn<MissingPart, Integer> MinColumn;
-    @FXML private TableColumn<MissingPart, Integer> MaxColumn;
-    
-    //MATCH 2: In-Person Meeting
-    @FXML private TableView<InPersonMeeting> tableViewM2;
-    @FXML private TableColumn<InPersonMeeting, String> ClientCol;
-    @FXML private TableColumn<InPersonMeeting, String>  NameCol;
-    @FXML private TableColumn<InPersonMeeting, String> SurnameCol;
-    @FXML private TableColumn<InPersonMeeting, String>  TitleCol;
-    @FXML private TableColumn<InPersonMeeting, String>   RegionCol;
-    @FXML private TableColumn<InPersonMeeting, String> CountryCol;
-    @FXML private TableColumn<InPersonMeeting, Integer> TerritoryIDCol;
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         engine = webView.getEngine();
+    }
 
-    // MATCH 1: Missing Part    
-    ProductIDColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Integer>("ProductID"));
-    pNameColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, String>("productName"));
-    SupplierIDColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Integer>("BusinessID"));
-    sNameColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, String>("supplierName"));
-    PriceColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Float>("Price"));
-    MinColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Integer>("Min"));
-    MaxColumn.setCellValueFactory(new PropertyValueFactory<MissingPart, Integer>("Max"));
-    tableViewM1.setItems(getDataM1());
-    
-    
-    //MATCH 2: In-Person Meeting
-    ClientCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Client"));
-    NameCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Name"));
-    SurnameCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Surname"));
-    TitleCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Title"));
-    RegionCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Region"));
-    CountryCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, String>("Country"));
-    TerritoryIDCol.setCellValueFactory(new PropertyValueFactory<InPersonMeeting, Integer>("TerritoryID"));
-    tableViewM2.setItems(getDataM2());        
-    }
-    
-    public ObservableList<MissingPart> getDataM1(){
-        ObservableList<MissingPart> datalist = FXCollections.observableArrayList();
-       
-        try{
-            // this is the SQL connection code
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=AdventureWorks2014;integratedSecurity=true";
-            Connection con = DriverManager.getConnection(url);
-            String query1 = " SELECT p.ProductID, p.Name AS 'pName', s.BusinessEntityID, s.Name AS 'sName', h.StandardPrice, h.MinOrderQty, h.MaxOrderQty\n" +
-                "  FROM HasInventoryOf h, Supplier s, Product p \n" +
-                "  WHERE MATCH (s-(h)->p)\n" +
-                "  AND (p.ProductID = '351' OR p.ProductID = '321')";
-            
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(query1);
-            
-            MissingPart missingpart = null;
-            while(rs.next()){
-                missingpart = new MissingPart(rs.getInt("ProductID"), rs.getString("pName"), rs.getInt("BusinessEntityID"), rs.getString("sName"), rs.getFloat("StandardPrice"), rs.getInt("MinOrderQty"), rs.getInt("MaxOrderQty"));
-                datalist.add(missingpart);
-            }
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, e);
-        }   
-        return datalist;
-    }
-    
-        public ObservableList<InPersonMeeting> getDataM2(){
-        ObservableList<InPersonMeeting> datalist = FXCollections.observableArrayList();
-       
-        try{
-            // this is the SQL connection code
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=AdventureWorks2014;integratedSecurity=true";
-            Connection con = DriverManager.getConnection(url);
-            String query1 = "  SELECT c.StoreName AS 'Client', e.FirstName, e.LastName, e.JobTitle AS 'Title', l.Name AS 'Region', l.CountryRegionCode AS 'Country', e.TerritoryID\n" +
-                "  FROM dbo.Employee e, dbo.Location l, dbo.LocatedIn lin, dbo.Customer c, dbo.LocatedIn lin2\n" +
-                "  WHERE MATCH (e-(lin)->l<-(lin2)-c)  \n" +
-                "  AND (c.StoreName = 'Endurance Bikes' OR c.StoreName = 'All Cycle Shop')\n" +
-                "  ORDER BY c.StoreName";
-            
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(query1);
-            
-            InPersonMeeting row = null;
-            while(rs.next()){
-                row = new InPersonMeeting(rs.getString("Client"), rs.getString("FirstName"), rs.getString("LastName"), rs.getString("Title"), rs.getString("Region"), rs.getString("Country"), rs.getInt("TerritoryID"));
-                datalist.add(row);
-            }
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, e);
-        }   
-        return datalist;
-    }
-    
     public void btn1(ActionEvent event){
-        //--------------------------------------------
-            try{
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String sql_url = "jdbc:sqlserver://localhost:1433;databaseName=Restaurantdb;integratedSecurity=true";
-            Connection con = DriverManager.getConnection(sql_url);
-            
-            //---------------------------------------------FILEWRITE SETUP
-            FileWriter fileWriter = new FileWriter("c:\\Users\\Administrator\\Documents\\msft17\\NetBeansProjects\\WebViewTry\\src\\webviewtry\\sample2.json");
-            JSONObject json = new JSONObject();
-            JSONArray node_array = new JSONArray();
-            JSONArray edge_array = new JSONArray();
-            
-            //------------------------------------------- QUERIES
-            String query1 = "SELECT  c.name, c.stateName\n" +
-                "FROM City c, Person p, livesIn lin\n" +
-                "WHERE MATCH(p-(lin)->c)\n" +
-                "GROUP BY c.name, c.stateName\n" +
-                "HAVING count(p.name) > 1";
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(query1);
-            
-            while(rs.next()){
-                // Get person name, add to JSON Object Node List
-                String cityname = rs.getString("name");
-                String statename = rs.getString("stateName");
-                String cityandstate = cityname + statename;
-
-                JSONObject item = new JSONObject();
-                item.put("id", cityandstate);                
-                item.put("group", 1);
-                node_array.put(item);
-                
-                // Get ppl who live in this city 
-                String query2 = String.format("SELECT p.name \n" +
-                    "FROM City c, Person p, livesIn lin\n" +
-                    "WHERE MATCH(p-(lin)->c)\n" +
-                    "AND c.name = '%s' \n" +
-                    "AND c.stateName = '%s'", cityname, statename);
-                Statement st2 = con.createStatement();
-                ResultSet rs2 = st2.executeQuery(query2);
-                
-                while(rs2.next()){
-                    String person_node = rs2.getString("name");
-
-                        // add node first:
-                        JSONObject rest_item = new JSONObject();
-                        rest_item.put("id", person_node);                
-                        rest_item.put("group", 3);
-                        node_array.put(rest_item);
-                        
-                        // then add edge connecting to it:
-                        JSONObject rest_item2 = new JSONObject();
-                        rest_item2.put("source", person_node);                
-                        rest_item2.put("target", cityandstate);
-                        rest_item2.put("value", 10);
-                        edge_array.put(rest_item2);
-                }
-                
-                
-                json.put("nodes", node_array);
-                json.put("links", edge_array);
-            }
-
-            fileWriter.write(json.toString());
-            fileWriter.close();
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, e);
-        }
-        
         URL url = getClass().getResource("index.html");
         engine.load(url.toExternalForm());
     }
@@ -455,11 +284,5 @@ public class FXMLDocumentController implements Initializable {
         URL url = getClass().getResource("nativejs.html");
         engine.load(url.toExternalForm());
     }
-    
-    public void btn6(ActionEvent event){
-        URL url = getClass().getResource("index4.html");
-        webView.getEngine().load(url.toExternalForm());
-    }
-    
 
 }

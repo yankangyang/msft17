@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="main.css">
-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <style>
             path.link {
                 fill: none;
@@ -67,8 +67,8 @@
                         .nodes(d3.values(nodes))
                         .links(links)
                         .size([width, height])
-                        .linkDistance(125)
-                        .charge(-500)
+                        .linkDistance(60)
+                        .charge(-300)
                         .on("tick", tick)
                         .start();
 
@@ -105,7 +105,7 @@
                         .call(force.drag());
 
                 node.append("circle")
-                        .attr("r", 15)
+                        .attr("r", 6)
                         .style("fill", function (d) {
                             return colorScale(d.name)
                         });
@@ -148,7 +148,7 @@
 
                     d3.select(this).select("circle").transition()
                             .duration(750)
-                            .attr("r", 16);
+                            .attr("r", 6);
                 }
 
                 function dblclick() {
@@ -168,3 +168,4 @@
         </script>
     </body>
 </html>
+
