@@ -55,6 +55,8 @@
                                                             <Font size="36.0" />
                                                          </font>
                                                       </Text>
+                                                      <Button layoutX="1051.0" layoutY="37.0" mnemonicParsing="false" onAction="#MATCH1DatatoJSON" text="Load Data" />
+                                                      <Button layoutX="971.0" layoutY="37.0" mnemonicParsing="false" onAction="#MATCH2DatatoJSON" text="Load Data2" />
                                                    </children>
                                                 </AnchorPane>
                                               <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0">

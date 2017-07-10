@@ -11,7 +11,9 @@
   </resources>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="D3Test.jar" size="21703" download="eager" />
+    <jar href="D3Test.jar" size="24207" download="eager" />
+    <jar href="lib/json-20170516.jar" size="57264" download="eager" />
+    <jar href="lib/json-simple-1.1.1.jar" size="23931" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="D3Test" >
     <param name="requiredFXVersion" value="2.2+"/>

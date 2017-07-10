@@ -3,23 +3,15 @@
 <style>
 
 .link {
-  stroke: #888;
+  stroke: #9494ff;
   stroke-width: 1.5px;
 }
 
 .node {
   cursor: move;
   fill: #ccc;
-  stroke: #888;
+  stroke: #000;
   stroke-width: 1.5px;
-}
-
-.node.supplier {
-  fill: orange;
-}
-
-.node.part {
-  fill: midnightblue;
 }
 
 .node.fixed {
@@ -37,12 +29,12 @@ text {
 <script>
 
 var width = 800,
-    height = 800;
+    height = 750;
 
 var force = d3.layout.force()
     .size([width, height])
     .charge(-400)
-    .linkDistance(60)
+    .linkDistance(40)
 
 
 var drag = force.drag()
@@ -52,7 +44,7 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-d3.json("flare.json", function(error, graph) {
+d3.json("match1.json", function(error, graph) {
   if (error) throw error;
 
   force
@@ -71,7 +63,6 @@ d3.json("flare.json", function(error, graph) {
     .enter().append("circle")
       .attr("class", "node")
       .attr("r", 12)
-      .attr("class", function(d) { return "node " + d.type; })
       .on("dblclick", dblclick)
       .call(drag);
       
@@ -117,8 +108,8 @@ d3.json("flare.json", function(error, graph) {
                'xoverflow':'visible'})
         .append('svg:path')
             .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
-            .attr('fill', '#888')
-            .attr('stroke','#888');
+            .attr('fill', '#9494ff')
+            .attr('stroke','#9494ff');
 
       
   force.on("tick", function() {

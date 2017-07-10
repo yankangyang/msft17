@@ -457,8 +457,205 @@ public class FXMLDocumentController implements Initializable {
     }
     
     public void btn6(ActionEvent event){
-        URL url = getClass().getResource("index4.html");
+        URL url = getClass().getResource("D3Sticky.html");
         webView.getEngine().load(url.toExternalForm());
+    }
+    
+    public void MATCH1DatatoJSON(ActionEvent event){
+        try{
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String sql_url = "jdbc:sqlserver://localhost:1433;databaseName=AdventureWorks2014;integratedSecurity=true";
+            Connection con = DriverManager.getConnection(sql_url);
+            
+            //---------------------------------------------FILEWRITE SETUP
+            FileWriter fileWriter = new FileWriter("c:\\Users\\Administrator\\Documents\\msft17\\NetBeansProjects\\WebViewTry2\\src\\webviewtry\\match1.json");
+            JSONObject json = new JSONObject();
+            JSONArray node_array = new JSONArray();
+            JSONArray edge_array = new JSONArray();
+            
+            //------------------------------------------- QUERIES
+            String query1 = "  SELECT p.Name\n" +
+                "  FROM HasInventoryOf h, Supplier s, Product p \n" +
+                "  WHERE MATCH (s-(h)->p)\n" +
+                "  AND (p.ProductID = '351' OR p.ProductID = '321')\n" +
+                "  GROUP BY p.Name";
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query1);
+            int part_counter = 0;
+            int supplier_counter = 0;
+            
+            while(rs.next()){
+     
+                // Get PART, add to JSON Object Node List
+                String part_node = rs.getString("Name");
+
+                JSONObject item = new JSONObject();
+                item.put("name", part_node);                
+                item.put("type", "part");
+                node_array.put(item);
+                
+                supplier_counter++;
+                
+                // Get supplier to connect
+                String query2 = String.format("  SELECT s.Name AS 'sName'\n" +
+                "  FROM HasInventoryOf h, Supplier s, Product p \n" +
+                "  WHERE MATCH (s-(h)->p)\n" +
+                "  AND p.Name = '%s'\n" +
+                "  GROUP BY s.Name", part_node);
+
+                Statement st2 = con.createStatement();
+                ResultSet rs2 = st2.executeQuery(query2);
+                
+                while(rs2.next()){
+                    
+                    
+                    String supplier_node = rs2.getString("sName");
+        
+                        // add node first:
+                        JSONObject supplier_item = new JSONObject();
+                        supplier_item.put("name", supplier_node);                
+                        supplier_item.put("type", "supplier");
+                        node_array.put(supplier_item);
+                        
+                        // then add edge connecting to it:
+                        JSONObject rest_item2 = new JSONObject();
+                        rest_item2.put("source", supplier_counter);                
+                        rest_item2.put("target", part_counter);
+                        rest_item2.put("type", "hasInvOf");
+                        edge_array.put(rest_item2);
+                    
+                    supplier_counter++;
+                    }
+                part_counter = supplier_counter;
+                }
+                
+            json.put("nodes", node_array);
+            json.put("links", edge_array);
+            
+
+            fileWriter.write(json.toString());
+            fileWriter.close();
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
+    }
+    
+    public void MATCH2DatatoJSON(ActionEvent event){
+        try{
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String sql_url = "jdbc:sqlserver://localhost:1433;databaseName=AdventureWorks2014;integratedSecurity=true";
+            Connection con = DriverManager.getConnection(sql_url);
+            
+            //---------------------------------------------FILEWRITE SETUP
+            FileWriter fileWriter = new FileWriter("c:\\Users\\Administrator\\Documents\\msft17\\NetBeansProjects\\WebViewTry2\\src\\webviewtry\\match2.json");
+            JSONObject json = new JSONObject();
+            JSONArray node_array = new JSONArray();
+            JSONArray edge_array = new JSONArray();
+            
+            //------------------------------------------- QUERIES
+            String query1 = " SELECT l.Name AS 'Region', l.CountryRegionCode AS 'Country'\n" +
+                "  FROM dbo.Employee e, dbo.Location l, dbo.LocatedIn lin, dbo.Customer c, dbo.LocatedIn lin2\n" +
+                "  WHERE MATCH (e-(lin)->l<-(lin2)-c)  \n" +
+                "  AND (c.StoreName = 'Endurance Bikes' OR c.StoreName = 'All Cycle Shop')\n" +
+                "  GROUP BY l.Name , l.CountryRegionCode";
+            
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query1);
+            int location_counter = 0;
+            int dependent_counter = 0;
+            
+            while(rs.next()){
+     
+                // Get Location, add to JSON Object Node List
+                String region = rs.getString("Region");
+                String country = rs.getString("Country");
+                String location_node = region + " " + country;
+
+                JSONObject item = new JSONObject();
+                item.put("name", location_node);                
+                item.put("type", "location");
+                node_array.put(item);
+                
+                dependent_counter++;
+                
+                // Add the Customer in concern to location
+                String query2 = String.format(" SELECT c.StoreName\n" +
+                "  FROM dbo.Employee e, dbo.Location l, dbo.LocatedIn lin, dbo.Customer c, dbo.LocatedIn lin2\n" +
+                "  WHERE MATCH (e-(lin)->l<-(lin2)-c)  \n" +
+                "  AND (c.StoreName = 'Endurance Bikes' OR c.StoreName = 'All Cycle Shop')" +
+                "  AND l.Name = '%s'\n" +
+                "  GROUP BY c.StoreName", region);
+
+                Statement st2 = con.createStatement();
+                ResultSet rs2 = st2.executeQuery(query2);
+                
+                while(rs2.next()){
+                    
+                    String customer_node = rs2.getString("StoreName");
+        
+                        // add node first:
+                        JSONObject customer_item = new JSONObject();
+                        customer_item.put("name", customer_node);                
+                        customer_item.put("type", "customer");
+                        node_array.put(customer_item);
+                        
+                        // then add edge connecting to it:
+                        JSONObject rest_item2 = new JSONObject();
+                        rest_item2.put("source", dependent_counter);                
+                        rest_item2.put("target", location_counter);
+                        rest_item2.put("type", "LocatedIn");
+                        edge_array.put(rest_item2);
+                    
+                    dependent_counter++;
+                    }
+                
+                // add the employees
+                String query3 = String.format(" SELECT e.FirstName, e.LastName\n" +
+                "  FROM dbo.Employee e, dbo.Location l, dbo.LocatedIn lin, dbo.Customer c, dbo.LocatedIn lin2\n" +
+                "  WHERE MATCH (e-(lin)->l<-(lin2)-c)  \n" +
+                "  AND (c.StoreName = 'Endurance Bikes' OR c.StoreName = 'All Cycle Shop')" +
+                "  AND l.Name = '%s'\n", region);
+
+                Statement st3 = con.createStatement();
+                ResultSet rs3 = st3.executeQuery(query3);
+                
+                while(rs3.next()){
+                   
+                    String name = rs3.getString("FirstName") + " " + rs3.getString("LastName");
+        
+                        // add node first:
+                        JSONObject supplier_item = new JSONObject();
+                        supplier_item.put("name", name);                
+                        supplier_item.put("type", "employee");
+                        node_array.put(supplier_item);
+                        
+                        // then add edge connecting to it:
+                        JSONObject rest_item2 = new JSONObject();
+                        rest_item2.put("source", dependent_counter);                
+                        rest_item2.put("target", location_counter);
+                        rest_item2.put("type", "LocatedIn");
+                        edge_array.put(rest_item2);
+                    
+                    dependent_counter++;
+                    }
+                
+                location_counter = dependent_counter;
+                }
+            
+                
+            json.put("nodes", node_array);
+            json.put("links", edge_array);
+            
+
+            fileWriter.write(json.toString());
+            fileWriter.close();
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
     }
     
 

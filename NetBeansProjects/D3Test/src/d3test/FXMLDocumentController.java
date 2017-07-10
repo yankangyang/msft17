@@ -35,7 +35,7 @@ public class FXMLDocumentController implements Initializable {
     }
     
     public void btn1(ActionEvent event){
-        URL url = getClass().getResource("D3Arrow.html");
+        URL url = getClass().getResource("match2.html");
         engine.load(url.toExternalForm());
     }
     
