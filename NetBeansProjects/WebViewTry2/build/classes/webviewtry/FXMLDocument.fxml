@@ -57,6 +57,7 @@
                                                       </Text>
                                                       <Button layoutX="1051.0" layoutY="37.0" mnemonicParsing="false" onAction="#MATCH1DatatoJSON" text="Load Data" />
                                                       <Button layoutX="971.0" layoutY="37.0" mnemonicParsing="false" onAction="#MATCH2DatatoJSON" text="Load Data2" />
+                                                      <Button layoutX="87.0" layoutY="37.0" mnemonicParsing="false" onAction="#MATCH3DatatoJSON" text="Load Data 3" />
                                                    </children>
                                                 </AnchorPane>
                                               <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0">
@@ -107,7 +108,7 @@
                                                                            <children>
                                                                               <ImageView fitHeight="709.0" fitWidth="592.0" layoutX="104.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
                                                                                  <image>
-                                                                                    <Image url="@../Picture1.png" />
+                                                                                    <Image url="@Schema.png" />
                                                                                  </image>
                                                                               </ImageView>
                                                                            </children>
