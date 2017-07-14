@@ -7,11 +7,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="761.0" prefWidth="939.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="d3test.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="d3test.FXMLDocumentController">
     <children>
-        <Button fx:id="button" layoutX="38.0" layoutY="45.0" onAction="#btn5" text="Launch Sticky" />
+        <Button fx:id="button" layoutX="39.0" layoutY="33.0" onAction="#btn1" text="Launch 1" />
         <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
-      <WebView fx:id="webView" layoutX="14.0" layoutY="106.0" prefHeight="641.0" prefWidth="909.0" />
-      <Button layoutX="756.0" layoutY="45.0" mnemonicParsing="false" onAction="#btn1" text="Launch Arrow Arcs" />
+      <WebView fx:id="webView" layoutX="25.0" layoutY="92.0" prefHeight="800.0" prefWidth="850.0" />
+      <Button layoutX="118.0" layoutY="33.0" mnemonicParsing="false" onAction="#btn2" text="Launch 2" />
+      <Button layoutX="201.0" layoutY="33.0" mnemonicParsing="false" onAction="#btn3NC" text="Launch 3NC" />
+      <Button layoutX="296.0" layoutY="33.0" mnemonicParsing="false" onAction="#btn3" text="Launch 3" />
     </children>
 </AnchorPane>

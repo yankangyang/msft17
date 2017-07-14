@@ -29,13 +29,23 @@ public class FXMLDocumentController implements Initializable {
         engine = webView.getEngine();
     }    
     
-    public void btn5(ActionEvent event){
+    public void btn1(ActionEvent event){
         URL url = getClass().getResource("D3Sticky.html");
         engine.load(url.toExternalForm());
     }
     
-    public void btn1(ActionEvent event){
+    public void btn2(ActionEvent event){
         URL url = getClass().getResource("match2.html");
+        engine.load(url.toExternalForm());
+    }
+    
+    public void btn3NC(ActionEvent event){
+        URL url = getClass().getResource("match3NC.html");
+        engine.load(url.toExternalForm());
+    }
+    
+    public void btn3(ActionEvent event){
+        URL url = getClass().getResource("match3.html");
         engine.load(url.toExternalForm());
     }
     

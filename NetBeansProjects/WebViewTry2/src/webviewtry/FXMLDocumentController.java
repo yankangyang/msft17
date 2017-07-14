@@ -56,6 +56,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML private TableColumn<InPersonMeeting, String>   RegionCol;
     @FXML private TableColumn<InPersonMeeting, String> CountryCol;
     @FXML private TableColumn<InPersonMeeting, Integer> TerritoryIDCol;
+
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -691,14 +692,23 @@ public class FXMLDocumentController implements Initializable {
             int part_counter = 0;
             int assembly1_counter = 0;
             int assembly2_counter = 0;
-
+            
+            // ARRAYS
+            int[] product_list = new int[5000];
+            int[] edge_list = new int[5000];
+            int list_ind = 0;
+            
             while(rs.next()){
                 // Add Suppliers
 
                 String supplier_node = rs.getString("Name");
                 
                 supplier_counter++;
-                
+                //(
+                part_counter++;
+                assembly1_counter++;
+                assembly2_counter++;
+                //)
                 JSONObject item = new JSONObject();
                 item.put("name", supplier_node);                
                 item.put("type", "supplier");
@@ -731,6 +741,10 @@ public class FXMLDocumentController implements Initializable {
                 while(rs2.next()){
                     
                     part_counter++;
+                    //(
+                    assembly1_counter++;
+                    assembly2_counter++;
+                    //)
                     String part_node = rs2.getString("Name");
                     int assembly_id = rs2.getInt("ProductID");
                     
@@ -763,23 +777,50 @@ public class FXMLDocumentController implements Initializable {
                         ResultSet rs3 = st3.executeQuery(query3);
                         
                         while(rs3.next()){
-                            assembly1_counter++;
+                            
                             String assembly1_node = rs3.getString("Name");
+                            int assembly1_pid = rs3.getInt("ProductID");
                             
-                            // add node first:
-                            JSONObject assembly1_item = new JSONObject();
-                            assembly1_item.put("name", assembly1_node);                
-                            assembly1_item.put("type", "part");
-                            node_array.put(assembly1_item);
+                            int nodeCheck = SearchIDList.ListSearch(assembly1_pid, product_list);
+                            // if the node is already in the array, only add the edge
+                            /*
+                            if ((list_ind != 0) && (nodeCheck >= 0)){
+                                System.out.printf("   DETECTED DUPLICATE %d, %d\n", assembly1_pid, edge_list[nodeCheck]);
+                                // then add edge connecting to it: from edge_list[nodeCheck]
+                                JSONObject assembly1_edge = new JSONObject();
+                                assembly1_edge.put("source", assembly1_counter);                
+                                assembly1_edge.put("target", edge_list[nodeCheck]);
+                                assembly1_edge.put("type", "IsPartOf");
+                                edge_array.put(assembly1_edge);
+                            }
+                            else{
+                            */
+                                assembly1_counter++;
+                            
+                                //(
+                                assembly2_counter++;
+                                //)
+                                // add node first:
+                                JSONObject assembly1_item = new JSONObject();
+                                assembly1_item.put("name", assembly1_node);                
+                                assembly1_item.put("type", "L1Assembly");
+                                node_array.put(assembly1_item);
 
-                            // then add edge connecting to it:
-                            JSONObject assembly1_edge = new JSONObject();
-                            assembly1_edge.put("source", assembly1_counter);                
-                            assembly1_edge.put("target", part_counter);
-                            assembly1_edge.put("type", "IsPartOf");
-                            edge_array.put(part_edge);
+                                // then add edge connecting to it:
+                                JSONObject assembly1_edge = new JSONObject();
+                                assembly1_edge.put("source", part_counter);                
+                                assembly1_edge.put("target", assembly1_counter);
+                                assembly1_edge.put("type", "IsPartOf");
+                                edge_array.put(assembly1_edge);
+                                
+                                product_list[list_ind] = assembly1_pid;
+                                edge_list[list_ind] = assembly1_counter;
+                                
+                                list_ind++;
+                                
+                                System.out.printf("      Assembly1 added: %s -> %d, %d\n", assembly1_node, assembly1_counter, assembly1_pid);
+                            //}
                             
-                            System.out.printf("      Assembly1 added: %s -> %d\n", assembly1_node, assembly1_counter);
                         }
                         
                     }
@@ -797,56 +838,101 @@ public class FXMLDocumentController implements Initializable {
                         ResultSet rs4 = st4.executeQuery(query4);
                         
                         while(rs4.next()){
-                            
-                            assembly1_counter++;
                             String assembly2_node = rs4.getString("Name");
                             int L1_assembly_id = rs4.getInt("ProductID");
                             
-                            // add node first:
-                            JSONObject assembly2_item = new JSONObject();
-                            assembly2_item.put("name", assembly2_node);                
-                            assembly2_item.put("type", "L2Assembly");
-                            node_array.put(assembly2_item);
-
-                            // then add edge connecting to it:
-                            JSONObject assembly2_edge = new JSONObject();
-                            assembly2_edge.put("source", assembly1_counter);                
-                            assembly2_edge.put("target", part_counter);
-                            assembly2_edge.put("type", "IsPartOf");
-                            edge_array.put(assembly2_edge);
+                            int nodeCheck2 = SearchIDList.ListSearch(L1_assembly_id, product_list);
                             
-                            System.out.printf("      Assembly2(else) added: %s -> %d\n", assembly2_node, assembly1_counter);
-                            
-                            String query5 = String.format("   SELECT p2.ProductID, p2.Name\n" +
-                            " FROM dbo.Product p1, dbo.Product p2, dbo.IsPartOf partOf1\n" +
-                            " WHERE MATCH (p1-(partOf1)->p2)\n" +
-                            " AND p1.ProductID = '%d'\n" +
-                            " ORDER BY p2.ProductID, p2.Name", L1_assembly_id);
-                        
-                            Statement st5 = con.createStatement();
-                            ResultSet rs5 = st5.executeQuery(query5);
+                            /*if ((list_ind != 0) && (nodeCheck2 >= 0)){
+                                System.out.printf("   DETECTED DUPLICATE %d, %d\n", L1_assembly_id, edge_list[nodeCheck2]);
 
-                            while(rs5.next()){
+                                // then add edge connecting to it: from edge_list[nodeCheck]
+                                JSONObject assembly2_edge = new JSONObject();
+                                assembly2_edge.put("source", assembly1_counter);                
+                                assembly2_edge.put("target", edge_list[nodeCheck2]);
+                                assembly2_edge.put("type", "IsPartOf");
+                                edge_array.put(assembly2_edge);
+                            }
+                            else { */
+                                //System.out.printf("  in else\n");
+                                assembly1_counter++;
+                                //(
                                 assembly2_counter++;
-                                String assembly3_node = rs5.getString("Name");
-                                int L2_assembly_id = rs5.getInt("ProductID");
+                                //)
 
                                 // add node first:
-                                JSONObject assembly3_item = new JSONObject();
-                                assembly3_item.put("name", assembly3_node);                
-                                assembly3_item.put("type", "part");
-                                node_array.put(assembly3_item);
+                                JSONObject assembly2_item = new JSONObject();
+                                assembly2_item.put("name", assembly2_node);                
+                                assembly2_item.put("type", "L2Assembly");
+                                node_array.put(assembly2_item);
 
                                 // then add edge connecting to it:
-                                JSONObject assembly3_edge = new JSONObject();
-                                assembly3_edge.put("source", assembly2_counter);                
-                                assembly3_edge.put("target", assembly1_counter);
-                                assembly3_edge.put("type", "IsPartOf");
-                                edge_array.put(assembly3_edge);
+                                JSONObject assembly2_edge = new JSONObject();
+                                assembly2_edge.put("source", part_counter);                
+                                assembly2_edge.put("target", assembly1_counter);
+                                assembly2_edge.put("type", "IsPartOf");
+                                edge_array.put(assembly2_edge);
                                 
-                                System.out.printf("         Assembly3(else) added: %s -> %d\n", assembly3_node, assembly2_counter);
-                            }
-                        
+                                product_list[list_ind] = L1_assembly_id;
+                                edge_list[list_ind] = assembly1_counter;
+                                
+                                list_ind++;
+
+                                System.out.printf("      Assembly2(else) added: %s -> %d, %d\n", assembly2_node, assembly1_counter, L1_assembly_id);
+
+                                String query5 = String.format("   SELECT p2.ProductID, p2.Name\n" +
+                                " FROM dbo.Product p1, dbo.Product p2, dbo.IsPartOf partOf1\n" +
+                                " WHERE MATCH (p1-(partOf1)->p2)\n" +
+                                " AND p1.ProductID = '%d'\n" +
+                                " ORDER BY p2.ProductID, p2.Name", L1_assembly_id);
+
+                                Statement st5 = con.createStatement();
+                                ResultSet rs5 = st5.executeQuery(query5);
+
+                                while(rs5.next()){
+                                    
+                                    String assembly3_node = rs5.getString("Name");
+                                    int L2_assembly_id = rs5.getInt("ProductID");
+                                    /*
+                                    int nodeCheck3 = SearchIDList.ListSearch(L2_assembly_id, product_list);
+                                    
+                                    if ((list_ind != 0) && (nodeCheck3 >= 0)){
+                                        System.out.printf("   DETECTED DUPLICATE %d, %d\n", L2_assembly_id, edge_list[nodeCheck3]);
+
+                                        // then add edge connecting to it: from edge_list[nodeCheck]
+                                        JSONObject assembly3_edge = new JSONObject();
+                                        assembly3_edge.put("source", assembly2_counter);                
+                                        assembly3_edge.put("target", edge_list[nodeCheck3]);
+                                        assembly3_edge.put("type", "IsPartOf");
+                                        edge_array.put(assembly3_edge);
+
+                                    }
+                                    else{
+                                        */
+                                        assembly2_counter++;
+                                        // add node first:
+                                        JSONObject assembly3_item = new JSONObject();
+                                        assembly3_item.put("name", assembly3_node);                
+                                        assembly3_item.put("type", "L1Assembly");
+                                        node_array.put(assembly3_item);
+
+                                        // then add edge connecting to it:
+                                        JSONObject assembly3_edge = new JSONObject();
+                                        assembly3_edge.put("source", assembly2_counter);                
+                                        assembly3_edge.put("target", assembly1_counter);
+                                        assembly3_edge.put("type", "IsPartOf");
+                                        edge_array.put(assembly3_edge);
+                                        
+                                        product_list[list_ind] = L2_assembly_id;
+                                        edge_list[list_ind] = assembly2_counter;
+                                
+                                        list_ind++;
+
+                                        System.out.printf("         Assembly3(else) added: %s -> %d, %d\n", assembly3_node, assembly2_counter, L2_assembly_id);
+                                    //}
+                                }
+                            
+                            //} //end else
                             assembly1_counter = assembly2_counter;
                             
                         }
@@ -858,6 +944,8 @@ public class FXMLDocumentController implements Initializable {
                 
                 supplier_counter = part_counter;
             }
+            
+            
  
             json.put("nodes", node_array);
             json.put("links", edge_array);
@@ -874,3 +962,5 @@ public class FXMLDocumentController implements Initializable {
     
 
 }
+
+

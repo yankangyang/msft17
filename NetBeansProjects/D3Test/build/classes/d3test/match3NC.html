@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-
 <style>
 header{
     background-color: #373647;
@@ -11,8 +10,8 @@ body{
 }
 
 .link {
-  fill: #888;
-  stroke: #888;
+  fill: #999;
+  stroke: #999;
   stroke-width: 1.5px;
 }
 /*
@@ -21,40 +20,73 @@ body{
 }
 */
 .link.LocatedIn {
-  stroke: #888;
+  stroke: #999;
 }
 
 .edgepath.LocatedIn {
-  stroke: #888;
+  stroke: #999;
 }
 
 .node {
   cursor: move;
   fill: #ccc;
+  r: 6;
   stroke: #888;
   stroke-width: 1.5px;
 }
 
-.node.employee {
-  fill: orange;
+.node.L1Assembly {
+  fill: midnightblue;
+}
+.node.supplier {
+  fill: green;
+}
+
+
+.node.L2Assembly {
+  fill: #4295f4;
+}
+
+.node.part {
+  fill: #AED6F1;
 }
 
 .node.customer {
-  fill: purple;
+  fill: #EBDEF0  
 }
 
 .node.location {
-  fill: midnightblue;
+  r: 12;
+  fill: orange;
 }
 
 .node.fixed {
   fill: #f00;
 }
 
-text {
-  font: 10px sans-serif;
-  pointer-events: none;
+.node text {
+  display: none;
+  font: 14px sans-serif;
+  color: #f00;
+  stroke: #f00;
 }
+
+.node:hover circle {
+  fill: #ffff00;
+}
+
+.node:hover text {
+  display: inline;
+    fill: #f00;
+   stroke: #f00;
+}
+
+.cell {
+  fill: none;
+   color: #f00;
+  pointer-events: all;
+}
+
 img.headerpic {
     display: block;
     margin-left: auto;
@@ -124,31 +156,26 @@ p {
     margin-right:10px;
     float: left;
 }
-
 </style>
 <header>
     <br>
     <img class = "headerpic" src="MicrosoftSQLServer2.png" alt="Mountain View" style="width:46px;height:50px;">
     <h1>SQL Graph Visualizations</h1>
-    <h2>MATCH Scenario: In-Person Meeting</h2>
+    <h2>MATCH Scenario: Recall Supply-Chain</h2>
     <br>
 </header>
 <body>
 <script src="https://d3js.org/d3.v3.min.js"></script>
-
-
 <div id = 'vizdiv'>
 <script>
 
 var width = 850,
-    height = 700;
+    height = 850;
 
 var force = d3.layout.force()
     .size([width, height])
-    .charge(-400)
-    .linkDistance(100)
-
-//var color = d3.scaleOrdinal(d3.schemeCategory20);
+    .charge(-40)
+    .linkDistance(40)
 
 var drag = force.drag()
     .on("dragstart", dragstart);
@@ -156,8 +183,13 @@ var drag = force.drag()
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
+    
+var voronoi = d3.geom.voronoi()
+    .x(function(d) { return d.x; })
+    .y(function(d) { return d.y; })
+    .clipExtent([[0, 0], [width, height]]);
 
-d3.json("match2.json", function(error, graph) {
+d3.json("match3NC.json", function(error, graph) {
   if (error) throw error;
 
   force
@@ -168,34 +200,28 @@ d3.json("match2.json", function(error, graph) {
   var link = svg.selectAll(".link")
     .data(graph.links)
     .enter().append("line")
-    //.attr("class", "link")
     .attr("class", function(d) { return "link " + d.type; })
     .attr("marker-end", "url(#arrowhead)");
-    
 
   var node = svg.selectAll(".node")
     .data(graph.nodes)
-    .enter().append("circle")
+    .enter().append("g")
       .attr("class", function(d) { return "node " + d.type; })
-      .attr("r", 14)
+      .attr("r", function(d) { return "node " + d.type; })
       .on("dblclick", dblclick)
       .call(drag);
       
-  var text = svg.selectAll(".text")
-    .data(graph.nodes)
-    .enter()
-    .append("text")
-    .attr("dx", 15)
-    .attr("dy", ".35em")
-   
-  node.append("title")
+    var cell = node.append("path")
+      .attr("class", "cell");
+      
+    var text = node.append("text")
+      .attr("dy", ".35em")
       .text(function(d) { return d.name; });
       
-  text.style("fill", "#000000")
-	   .attr("width", "10")
-     .attr("height", "10")
-     .text(function(d) { return d.name; });
-     
+    var circle = node.append("circle")
+      .attr("r", 6);
+    
+
   var edgepaths = svg.selectAll(".edgepath")
         .data(graph.links)
         .enter()
@@ -216,8 +242,8 @@ d3.json("match2.json", function(error, graph) {
                'refX':25,
                'refY':0,
                'orient':'auto',
-               'markerWidth':5,
-               'markerHeight':5,
+               'markerWidth':3,
+               'markerHeight':3,
                'xoverflow':'visible'})
         .append('svg:path')
             .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
@@ -225,19 +251,26 @@ d3.json("match2.json", function(error, graph) {
 
       
   force.on("tick", function() {
+    cell
+        .data(voronoi(graph.nodes))
+    
     link.attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
+    
   
-    node.attr("cx", function(d) { return d.x; })
+    circle.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
         
-    text.attr("x", function(d) { return d.x; })
+    text.attr("x", function(d) { return d.x + 5; })
         .attr("y", function(d) { return d.y; });  
         
     edgepaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
-        return path});     
+        return path});
+        
+
+        
   });
     
 });
@@ -251,7 +284,6 @@ function dragstart(d) {
 }
 
 </script>
-
 </div>
 <style>
     table {
@@ -271,94 +303,90 @@ function dragstart(d) {
     }
     
 </style>
+
 <div id='querydiv'>
     <br>
-    <h3> Find all Sales Department employees in the same geographical region as customers: </h3>
+    <h3> Find Supplier of recalled parts and affected bikes/assemblies: </h3>
     <p>
-        <span style = "color:blue">SELECT</span> c.StoreName <span style = "color:gray">AS</span> 'Client', e.FirstName, e.LastName, e.JobTitle <span style = "color:gray">AS</span> 'Title', e.TerritoryID, l.Name <span style = "color:gray">AS</span> 'Region', l.CountryRegionCode <span style = "color:gray">AS</span> 'Country'
-    </p>    
-    <p>   
-        <span style = "color:blue"> FROM </span> dbo.Employee e, dbo.Location l, dbo.LocatedIn lin, dbo.Customer c, dbo.LocatedIn lin2
-    </p>
+        <span style = "color:green; font-weight:bold">Suppliers of potentially bad parts:</span>
+        </p>
     <p>
-        <span style = "color:blue">WHERE MATCH </span>(e-(lin)->l<-(lin2)-c)  
-    </p>
+        <span style = "color:blue">SELECT</span> s.BusinessEntityID, s.Name
+        </p>
     <p>
-        <span style = "color:blue">AND </span>(c.StoreName = <span style = "color:red">'Endurance Bikes'</span> OR <span style = "color:red">c.StoreName = 'All Cycle Shop'</span>)
-    </p>
+        <span style = "color:blue"> FROM </span> dbo.Supplier s, dbo.SuppliedFrom sfrom, dbo.Product p
+        </p>
     <p>
-        <span style = "color:blue">ORDER BY </span> c.StoreName
+        <span style = "color:blue">WHERE MATCH </span>(p-(sfrom)->s)
+        </p>
+    <p>
+        <span style = "color:gray">AND </span> s.TerritoryID = 4 <span style = "color:gray">AND</span> sfrom.ShipDate <span style = "color:gray">BETWEEN </span><span style = "color:red"> '2013-08-13 00:00:00.000' </span><span style = "color:gray"> AND </span> <span style = "color:red">'2013-08-22 00:00:00.000'</span>
+        </p>
+    <p>
+        <span style = "color:blue">GROUP BY</span> s.Name, s.BusinessEntityID
     </p>
     <br>
+    <p>
+        <span style = "color:green; font-weight:bold">Level 1 Assemblies (Bikes) Affected:</span>
+        </p>
+    <p>
+        <span style = "color:blue">SELECT</span> p3.ProductID, p3.Name
+        </p>
+    <p>
+        <span style = "color:blue"> FROM </span> dbo.Product p1, dbo.Product p2, dbo.Product p3, dbo.IsPartOf partOf1, dbo.IsPartOf partOf2
+        </p>
+    <p>
+        <span style = "color:blue">WHERE MATCH </span>(p1-(partOf1)->p2-(partOf2)->p3)
+        </p>
+    <p>
+        <span style = "color:gray">AND </span> p1.ProductID = <span style = "color:red">'322'</span> 
+        </p>
+    <p>
+        <span style = "color:blue">GROUP BY</span> p3.ProductID, p3.Name
+    </p>
+    <br>
+    
     <h3> Sample of Queried Data: </h3>
     <table>
         <tr>
-          <th>Client</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Title</th>
-          <th>TerritoryID</th>
-          <th>Region</th>
+          <th>Company</th>
+          <th>Contact</th>
           <th>Country</th>
         </tr>
         <tr>
-            <td>All Cycle Shop</td>	
-            <td>Sheela</td>	
-            <td>Word</td>	
-            <td>Purchasing Manager</td>	
-            <td>1</td>	
-            <td>Northwest</td>	
-            <td>US</td>
+          <td>Alfreds Futterkiste</td>
+          <td>Maria Anders</td>
+          <td>Germany</td>
         </tr>
         <tr>
-          <td>All Cycle Shop</td>	
-          <td>Mikael</td>	
-          <td>Sandberg</td>	
-          <td>Buyer</td>	
-          <td>1</td>	
-          <td>Northwest</td>	
-          <td>US</td>
+          <td>Centro comercial Moctezuma</td>
+          <td>Francisco Chang</td>
+          <td>Mexico</td>
         </tr>
         <tr>
-          <td>All Cycle Shop</td>	
-          <td>Michael</td>	
-          <td>Blythe</td>	
-          <td>Sales Representative</td>
-          <td>1</td>	
-          <td>Northwest</td>	
-          <td>US</td>
+          <td>Ernst Handel</td>
+          <td>Roland Mendel</td>
+          <td>Austria</td>
         </tr>
         <tr>
-          <td>Endurance Bikes</td>	
-          <td>Laura</td>	
-          <td>Norman</td>	
-          <td>Chief Financial Officer</td>	
-          <td>2</td>	
-          <td>Northeast</td>	
-          <td>US</td>
+          <td>Island Trading</td>
+          <td>Helen Bennett</td>
+          <td>UK</td>
         </tr>
         <tr>
-          <td>Endurance Bikes</td>	
-          <td>Linda</td>	
-          <td>Mitchell</td>	
-          <td>Sales Representative</td>	
-          <td>2</td>	
-          <td>Northeast</td>	
-          <td>US</td>
+          <td>Laughing Bacchus Winecellars</td>
+          <td>Yoshi Tannamuri</td>
+          <td>Canada</td>
         </tr>
         <tr>
-          <td>Endurance Bikes</td>	
-          <td>Garrett</td>	
-          <td>Vargas</td>	
-          <td>Sales Representative</td>	
-          <td>2</td> 
-          <td>Northeast</td>	
-          <td>US</td>
+          <td>Magazzini Alimentari Riuniti</td>
+          <td>Giovanni Rovelli</td>
+          <td>Italy</td>
         </tr>
       </table>
 </div>
 
 <div id='keydiv'>
-    <img class = "keypic" src="match1key.png" alt="Match1Key" style = "width: 530px; height:30px">
+    <img class = "keypic" src="Picture4.png" alt="Mountain View" style = "width: 350px; height:30px">
 </div>
 </body>
