@@ -94,9 +94,7 @@ body{
 img.headerpic {
     display: block;
     margin-left: auto;
-    position: relative;
-    margin-right: auto 
-    }
+    margin-right: auto }
 
 h1 {
 	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
@@ -107,7 +105,6 @@ h1 {
 	line-height: 25px;
         text-align: center;
         color: white;
-        margin-bottom: 2px;
     }
     
 h2 {
@@ -116,7 +113,7 @@ h2 {
 	font-style: bold;
 	font-variant: normal;
 	font-weight: 500;
-	line-height: 20px;
+	line-height: 26.4px;
         text-align: center;
         color: orange;
     }
@@ -134,28 +131,16 @@ h3 {
     }
     
 h4 {
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
 	font-size: 20px;
 	font-style: bold;
 	font-variant: normal;
 	font-weight: 1000;
 	line-height: 25px;
         text-align: left;
-        color: green;	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
-
+        color: green;
     }
-
-h5 {
-        font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
-        font-size: 16px;
-	font-style: bold;
-	font-variant: normal;
-	font-weight: 1000;
-	margin-bottom: 2px;
-        text-align: center;
-        color: #888;	
-
-    }
-
+    
 p {
 	font-family: "Lucida Sans Typewriter";
 	font-size: 18px;
@@ -170,14 +155,9 @@ p {
 #querydiv{
     width:850px;
     height:700px;
+    margin-right:10px;
+    margin-left:10px;
     float: right;
-    
-}
-
-#vizdiv{
-    width:850px;
-    height:700px;
-    float: left;
     
 }
 .child_div_1{
@@ -188,18 +168,8 @@ p {
 #keydiv{
     width:850px;
     height:100px;
+    margin-right:10px;
     float: left;
-}
-
-a{
-    	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
-	font-size: 12px;
-	font-style: bold;
-	font-variant: normal;
-	font-weight: 500;
-	line-height: 10px;
-        display: inline; 
-        color: white;
 }
 </style>
 <header>
@@ -207,156 +177,129 @@ a{
     <img class = "headerpic" src="MicrosoftSQLServer2.png" alt="Mountain View" style="width:46px;height:50px;">
     <h1>SQL Graph Visualizations</h1>
     <h2>MATCH Scenario: Recall Supply-Chain</h2>
-    <h5>
-        <a href="match2.html">In-Person Meeting</a>
-        <a href="match3.html">Recall Customers</a>
-    </h5>
     <br>
 </header>
 <body>
 <script src="https://d3js.org/d3.v3.min.js"></script>
+<div id = 'vizdiv'>
+<script>
 
-<div id = 'wrapper'>
-    <div id = 'vizdiv'>
-    <script>
+var width = 850,
+    height = 850;
 
-    var width = 850,
-        height = 850;
+var force = d3.layout.force()
+    .size([width, height])
+    .charge(-40)
+    .linkDistance(40)
 
-    var force = d3.layout.force()
-        .size([width, height])
-        .charge(-40)
-        .linkDistance(40)
+var drag = force.drag()
+    .on("dragstart", dragstart);
 
-    var drag = force.drag()
-        .on("dragstart", dragstart);
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+    
+var voronoi = d3.geom.voronoi()
+    .x(function(d) { return d.x; })
+    .y(function(d) { return d.y; })
+    .clipExtent([[0, 0], [width, height]]);
 
-    var svg = d3.select("body").append("svg")
-        .attr("width", width)
-        .attr("height", height);
+d3.json("match3NC.json", function(error, graph) {
+  if (error) throw error;
 
-    var voronoi = d3.geom.voronoi()
-        .x(function(d) { return d.x; })
-        .y(function(d) { return d.y; })
-        .clipExtent([[0, 0], [width, height]]);
+  force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+      
+  var link = svg.selectAll(".link")
+    .data(graph.links)
+    .enter().append("line")
+    .attr("class", function(d) { return "link " + d.type; })
+    .attr("marker-end", "url(#arrowhead)");
 
-    d3.json("match3NC.json", function(error, graph) {
-      if (error) throw error;
+  var node = svg.selectAll(".node")
+    .data(graph.nodes)
+    .enter().append("g")
+      .attr("class", function(d) { return "node " + d.type; })
+      .attr("r", function(d) { return "node " + d.type; })
+      .on("dblclick", dblclick)
+      .call(drag);
+      
+    var cell = node.append("path")
+      .attr("class", "cell");
+      
+    var text = node.append("text")
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name; });
+      
+    var circle = node.append("circle")
+      .attr("r", 6);
+    
 
-      force
-          .nodes(graph.nodes)
-          .links(graph.links)
-          .start();
-
-      var link = svg.selectAll(".link")
+  var edgepaths = svg.selectAll(".edgepath")
         .data(graph.links)
-        .enter().append("line")
-        .attr("class", function(d) { return "link " + d.type; })
-        .attr("marker-end", "url(#arrowhead)");
+        .enter()
+        .append('path')
+        .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+               'class':'edgepath',
+               'fill-opacity':0,
+               'stroke-opacity':0,
+               'fill':'blue',
+               'stroke':'red',
+               'id':function(d,i) {return 'edgepath'+i}})
+        .style("pointer-events", "none");
+     
+    svg.append('defs').append('marker')
+        .data(["LocatedIn"])
+        .attr({'id':'arrowhead',
+               'viewBox':'-0 -5 10 10',
+               'refX':25,
+               'refY':0,
+               'orient':'auto',
+               'markerWidth':3,
+               'markerHeight':3,
+               'xoverflow':'visible'})
+        .append('svg:path')
+            .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+            .attr("class", function(d) { return "link";})
 
-      var node = svg.selectAll(".node")
-        .data(graph.nodes)
-        .enter().append("g")
-          .attr("class", function(d) { return "node " + d.type; })
-          .attr("r", function(d) { return "node " + d.type; })
-          .on("dblclick", dblclick)
-          .call(drag);
+      
+  force.on("tick", function() {
+    cell
+        .data(voronoi(graph.nodes))
+    
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+    
+  
+    circle.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+        
+    text.attr("x", function(d) { return d.x + 5; })
+        .attr("y", function(d) { return d.y; });  
+        
+    edgepaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+        return path});
+        
 
-        var cell = node.append("path")
-          .attr("class", "cell");
+        
+  });
+    
+});
 
-        var text = node.append("text")
-          .attr("dy", ".35em")
-          .text(function(d) { return d.name; });
+function dblclick(d) {
+  d3.select(this).classed("fixed", d.fixed = false);
+}
 
-        var circle = node.append("circle")
-          .attr("r", 6);
+function dragstart(d) {
+  d3.select(this).classed("fixed", d.fixed = true);
+}
 
-
-      var edgepaths = svg.selectAll(".edgepath")
-            .data(graph.links)
-            .enter()
-            .append('path')
-            .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
-                   'class':'edgepath',
-                   'fill-opacity':0,
-                   'stroke-opacity':0,
-                   'fill':'blue',
-                   'stroke':'red',
-                   'id':function(d,i) {return 'edgepath'+i}})
-            .style("pointer-events", "none");
-
-        svg.append('defs').append('marker')
-            .data(["LocatedIn"])
-            .attr({'id':'arrowhead',
-                   'viewBox':'-0 -5 10 10',
-                   'refX':25,
-                   'refY':0,
-                   'orient':'auto',
-                   'markerWidth':3,
-                   'markerHeight':3,
-                   'xoverflow':'visible'})
-            .append('svg:path')
-                .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
-                .attr("class", function(d) { return "link";})
-
-
-      force.on("tick", function() {
-        cell
-            .data(voronoi(graph.nodes))
-
-        link.attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; });
-
-
-        circle.attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
-
-        text.attr("x", function(d) { return d.x + 5; })
-            .attr("y", function(d) { return d.y; });  
-
-        edgepaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
-            return path});
-
-      });
-
-    });
-
-    function dblclick(d) {
-      d3.select(this).classed("fixed", d.fixed = false);
-    }
-
-    function dragstart(d) {
-      d3.select(this).classed("fixed", d.fixed = true);
-    }
-
-    </script>
-
-
-    <h3> Scenario: </h3>
-
-        <h4>Suppliers of potentially bad parts:</h4>
-
-        <p>
-            <span style = "color:blue">SELECT</span> s.BusinessEntityID, s.Name
-            </p>
-        <p>
-            <span style = "color:blue"> FROM </span> dbo.Supplier s, dbo.SuppliedFrom sfrom, dbo.Product p
-            </p>
-        <p>
-            <span style = "color:blue">WHERE MATCH </span>(p-(sfrom)->s)
-            </p>
-        <p>
-            <span style = "color:gray">AND </span> s.TerritoryID = 4 <span style = "color:gray">AND</span> sfrom.ShipDate <span style = "color:gray">BETWEEN </span><span style = "color:red"> '2013-08-13 00:00:00.000' </span><span style = "color:gray"> AND </span> <span style = "color:red">'2013-08-22 00:00:00.000'</span>
-            </p>
-        <p>
-            <span style = "color:blue">GROUP BY</span> s.Name, s.BusinessEntityID
-        </p>
-
-    <img class = "keypic" src="matchNCkey.png" alt="Mountain View" style = "width: 630px; height:80px">
-    </div>
+</script>
+</div>
 <style>
     table {
         font-family: arial, sans-serif;
@@ -502,7 +445,5 @@ a{
 
 <div id='keydiv'>
     <img class = "keypic" src="matchNCkey.png" alt="Mountain View" style = "width: 630px; height:80px">
-</div>
-
 </div>
 </body>

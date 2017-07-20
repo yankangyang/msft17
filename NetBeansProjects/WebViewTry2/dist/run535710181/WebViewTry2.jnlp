@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="D3Test.jnlp">
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="WebViewTry2.jnlp">
   <information>
-    <title>D3Test</title>
+    <title>WebViewTry2</title>
     <vendor>Administrator</vendor>
     <description>null</description>
     <offline-allowed/>
@@ -11,13 +11,14 @@
   </resources>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="D3Test.jar" size="439861" download="eager" />
+    <jar href="WebViewTry2.jar" size="313240" download="eager" />
     <jar href="lib/json-20170516.jar" size="57264" download="eager" />
     <jar href="lib/json-simple-1.1.1.jar" size="23931" download="eager" />
+    <jar href="lib/sqljdbc41.jar" size="893229" download="eager" />
   </resources>
-  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="D3Test" >
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="WebViewTry2" >
     <param name="requiredFXVersion" value="2.2+"/>
   </applet-desc>
-  <jfx:javafx-desc  width="800" height="600" main-class="d3test.D3Test"  name="D3Test" />
+  <jfx:javafx-desc  width="800" height="600" main-class="webviewtry.WebViewTry"  name="WebViewTry2" />
   <update check="always"/>
 </jnlp>

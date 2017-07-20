@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+header{
+    background-color: #373647;
+}
+
+body{
+    background-color: white;
+}
+
+.link {
+  fill: #999;
+  stroke: #999;
+  stroke-width: 1.5px;
+}
+/*
+#LocatedIn {
+  fill: green;
+}
+*/
+.link.LocatedIn {
+  stroke: #CBD7B8;
+}
+
+.link.SuppliedFrom {
+  stroke: #BC8F8F;
+}
+
+.link.IsPartOf {
+  stroke: #999;
+}
+
+.node {
+  cursor: move;
+  fill: #ccc;
+  r: 6;
+  stroke: #888;
+  stroke-width: 1.5px;
+}
+
+.node.L1Assembly {
+  fill: midnightblue;
+}
+.node.supplier {
+  fill: green;
+}
+
+
+.node.L2Assembly {
+  fill: #4295f4;
+}
+
+.node.part {
+  fill: #AED6F1;
+}
+
+.node.customer {
+  fill: #EBDEF0  
+}
+
+.node.location {
+  r: 12;
+  fill: orange;
+}
+
+.node.fixed {
+  fill: #f00;
+}
+
+.node text {
+  display: none;
+  font: 14px sans-serif;
+  color: #f00;
+  stroke: #f00;
+}
+
+.node:hover circle {
+  fill: #ffff00;
+}
+
+.node:hover text {
+  display: inline;
+    fill: #f00;
+   stroke: #f00;
+}
+
+.cell {
+  fill: none;
+   color: #f00;
+  pointer-events: all;
+}
+
+img.headerpic {
+    display: block;
+    margin-left: auto;
+    position: relative;
+    margin-right: auto 
+    }
+
+img.matchNCkey {
+    display: block;
+    margin-left: auto;
+    position: relative;
+    margin-right: auto 
+    }
+    
+    img.schema {
+            display: block;
+    margin-left: auto;
+    position: relative;
+    margin-right: auto 
+    }
+
+h1 {
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 32px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 25px;
+        text-align: center;
+        color: white;
+        margin-bottom: 2px;
+    }
+    
+h2 {
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 24px;
+	font-style: bold;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 20px;
+        text-align: center;
+        color: orange;
+    }
+    
+h3 {
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 22px;
+	font-style: bolder;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 50px;
+        text-align: center;
+        color: #ddd;
+        background-color: #6f0038;
+    }
+    
+h4 {
+	font-size: 20px;
+	font-style: bold;
+	font-variant: normal;
+	font-weight: 1000;
+	line-height: 25px;
+        text-align: left;
+        color: green;	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+
+    }
+
+h5 {
+        font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+        font-size: 16px;
+	font-style: bold;
+	font-variant: normal;
+	font-weight: 1000;
+	margin-bottom: 2px;
+        text-align: center;
+        color: #888;	
+
+    }
+
+p {
+	font-family: "Lucida Sans Typewriter";
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 18px;
+        text-align: left;
+        
+    }
+
+#querydiv{
+    width:850px;
+    height:700px;
+    float: right;
+    
+}
+
+#vizdiv{
+    width:850px;
+    height:700px;
+    float: left;
+    
+}
+
+.child_div_1{
+    float:left;
+    margin-right:5px;
+}
+
+#keydiv{
+    width:850px;
+    height:100px;
+    float: left;
+}
+
+a{
+    	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 12px;
+	font-style: bold;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 10px;
+        display: inline; 
+        color: white;
+}
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+<header>
+    <br>
+    <img class = "headerpic" src="MicrosoftSQLServer2.png" alt="Mountain View" style="width:46px;height:50px;">
+    <h1>SQL Graph Visualizations</h1>
+    <h2>Database Schema</h2>
+    <h5>
+        <a href="match2.html">In-Person Meeting</a>
+        <a href="match3.html">Recall Customers</a>
+    </h5>
+    <br>
+</header>
+<body>
+
+<div id = 'wrapper'>
+    <div id = 'vizdiv'>
+        
+        <h3> Description </h3>
+
+
+        <p>
+            Adventure Works Bicycle, Inc. is a fictional bicycle wholesaler that manufactures and sells bicycles. Its supply-chain network includes raw material suppliers, customers, bicycle parts, and the company’s employees.
+        </p>
+        <p>
+            This scenario demonstrates the usefulness of SQL Server Graph Database in real-world enterprise applications including its multi-hop and hierarchical query abilities.          
+        </p>
+        <p>
+            Click on the tabs above to explore this scenario. If it is your first time using this app, a tutorial is included in the rightmost tab below
+        </p>
+    
+
+    <img class = "keypic" src="matchNCkey.png" alt="Mountain View" style = "width: 630px; height:80px">
+           <h3> Find Supplier of recalled parts and affected bikes/assemblies: </h3>
+
+    <h4>Suppliers of potentially bad parts:</h4>
+       
+    <p>
+        <span style = "color:blue">SELECT</span> s.BusinessEntityID, s.Name
+        </p>
+    <p>
+        <span style = "color:blue"> FROM </span> dbo.Supplier s, dbo.SuppliedFrom sfrom, dbo.Product p
+        </p>
+    <p>
+        <span style = "color:blue">WHERE MATCH </span>(p-(sfrom)->s)
+        </p>
+    <p>
+        <span style = "color:gray">AND </span> s.TerritoryID = 4 <span style = "color:gray">AND</span> sfrom.ShipDate <span style = "color:gray">BETWEEN </span><span style = "color:red"> '2013-08-13 00:00:00.000' </span><span style = "color:gray"> AND </span> <span style = "color:red">'2013-08-22 00:00:00.000'</span>
+        </p>
+    <p>
+        <span style = "color:blue">GROUP BY</span> s.Name, s.BusinessEntityID
+    </p>
+    <br>
+    
+        <h4>Level 1 Assemblies (Bikes) Affected:</h4>
+
+    <p>
+        <span style = "color:blue">SELECT</span> p3.ProductID, p3.Name
+        </p>
+    <p>
+        <span style = "color:blue"> FROM </span> dbo.Product p1, dbo.Product p2, dbo.Product p3, dbo.IsPartOf partOf1, dbo.IsPartOf partOf2
+        </p>
+    <p>
+        <span style = "color:blue">WHERE MATCH </span>(p1-(partOf1)->p2-(partOf2)->p3)
+        </p>
+    <p>
+        <span style = "color:gray">AND </span> p1.ProductID = <span style = "color:red">'322'</span> 
+        </p>
+    <p>
+        <span style = "color:blue">GROUP BY</span> p3.ProductID, p3.Name
+    </p>
+    <br>
+    
+
+</div>
+
+<div id='querydiv'>
+    <h3> Schema Diagram </h3>
+        <img class = "schema" src="Schema.png" alt="schema" style="width:600px;height:700px;">
+</div>
+</div>
+</body>

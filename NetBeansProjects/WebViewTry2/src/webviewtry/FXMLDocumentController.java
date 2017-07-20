@@ -658,7 +658,9 @@ public class FXMLDocumentController implements Initializable {
         }
         
     }
-    public void MATCH3DatatoJSON(ActionEvent event){
+    
+    
+    public void RecursiveDatatoJSON(ActionEvent event){
         try{
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String sql_url = "jdbc:sqlserver://localhost:1433;databaseName=AdventureWorks2014;integratedSecurity=true";
@@ -672,281 +674,135 @@ public class FXMLDocumentController implements Initializable {
             
             //------------------------------------------- QUERIES
             
-            // LOCATION = 4 SINGLE NODE: 
-            JSONObject location = new JSONObject();
-            location.put("name", "Southwest US");                
-            location.put("type", "location");
-            node_array.put(location);
-            
-            String query1 = "   SELECT s.BusinessEntityID, s.Name\n" +
-                "  FROM dbo.Supplier s, dbo.SuppliedFrom sfrom, dbo.Product p\n" +
-                "  WHERE MATCH (p-(sfrom)->s)\n" +
-                "  AND s.TerritoryID = 4\n" +
-                "  AND sfrom.ShipDate BETWEEN '2013-08-13 00:00:00.000' AND '2013-08-22 00:00:00.000'\n" +
-                "  GROUP BY s.Name, s.BusinessEntityID";
+            String query1 = "	-- Recursively find product assemblies.\n" +
+            "	WITH BOM (ProductId, Name, ProductNumber, parentid, parentname)\n" +
+            "	AS\n" +
+            "	(\n" +
+            "		-- first the anchor\n" +
+            "		SELECT p0.ProductID, p0.Name, p0.ProductNumber, \n" +
+            "			p1.ProductId parentid, p1.Name parentname\n" +
+            "		FROM Product p0, IsPartOf ipo, Product p1\n" +
+            "		WHERE MATCH(p0-(ipo)->p1)\n" +
+            "		-- then the 'recursion'\n" +
+            "		UNION ALL\n" +
+            "		SELECT p2.ProductID, p2.Name, p2.ProductNumber, \n" +
+            "			p3.ProductId parentid, p3.Name parentname\n" +
+            "		FROM BOM, IsPartOf ipo1, Product p2, Product p3\n" +
+            "		WHERE MATCH(p2-(ipo1)->p3)\n" +
+            "		AND BOM.parentid = p2.ProductId\n" +
+            "	  )\n" +
+            "	SELECT ProductId, Name, ProductNumber, parentid, parentname\n" +
+            "	FROM BOM\n" +
+            "   GROUP BY ProductID, Name, ProductNumber, parentID, parentname\n" +
+            "	GO";
             
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query1);
-            int location_counter = 0;
-            int supplier_counter = 0;
-            int part_counter = 0;
-            int assembly1_counter = 0;
-            int assembly2_counter = 0;
             
-            // ARRAYS
-            int[] product_list = new int[5000];
-            int[] edge_list = new int[5000];
-            int list_ind = 0;
+            // 1 ARRAY to keep track of the nodes added O(1) insertion and lookup
+            int[] nodelist = new int[1000];
+            
+            // COUNTER to keep track of inserted node #
+            int node_counter = 0;
             
             while(rs.next()){
-                // Add Suppliers
 
-                String supplier_node = rs.getString("Name");
+                int childID = rs.getInt("ProductID");
+                String childName = rs.getString("Name");
                 
-                supplier_counter++;
-                //(
-                part_counter++;
-                assembly1_counter++;
-                assembly2_counter++;
-                //)
-                JSONObject item = new JSONObject();
-                item.put("name", supplier_node);                
-                item.put("type", "supplier");
-                node_array.put(item);
+                int parentID = rs.getInt("parentid");
+                String parentName = rs.getString("parentname");
                 
-                // then add edge connecting to it:
-                JSONObject rest_item2 = new JSONObject();
-                rest_item2.put("source", supplier_counter);                
-                rest_item2.put("target", location_counter);
-                rest_item2.put("type", "LocatedIn");
-                edge_array.put(rest_item2);
+                // check if childnode and parentnode are stored in the array
+                int array_status_child = ArrayCheck.CheckArray(childID, nodelist);
+                int array_status_parent = ArrayCheck.CheckArray(parentID, nodelist);
                 
-                System.out.printf("Supplier added: %s -> %d\n", supplier_node, supplier_counter);
+                // Condition 1: both C and P exist
+                if ((array_status_child > 0) && (array_status_parent > 0)){
+                    // insert edge between C and P
+                    JSONObject bothedge = new JSONObject();
+                    bothedge.put("source", array_status_child);                
+                    bothedge.put("target", array_status_parent);
+                    bothedge.put("type", "IsPartOf");
+                    edge_array.put(bothedge);
+                }
+                // Condition 2: C is a new node, P exists
+                else if ((array_status_child < 0) && (array_status_parent > 0)){
+                    // add C as a node
+                    JSONObject item = new JSONObject();
+                    item.put("name", childName);  
+                    item.put("id", childID);
+                    item.put("type", "part");
+                    node_array.put(item);
                     
-                // Add the associated products for each supplier
-                String query2 = String.format("  SELECT p.ProductID, p.Name, s.BusinessEntityID, s.Name AS 'sName'\n" +
-                    "  FROM dbo.Supplier s, dbo.SuppliedFrom sfrom, dbo.Product p\n" +
-                    "  WHERE MATCH (p-(sfrom)->s)\n" +
-                    "  AND s.TerritoryID = 4\n" +
-                    "  AND sfrom.ShipDate BETWEEN '2013-08-13 00:00:00.000' AND '2013-08-22 00:00:00.000'\n" +
-                    "  AND p.Name NOT LIKE '%%nut%%' \n" +
-                    "  AND p.Name NOT LIKE '%%bolt%%'\n" +
-                    "  AND p.Name NOT LIKE '%%lock%%'\n" +
-                    "  AND s.Name = '%s'\n" +
-                    "  GROUP BY p.ProductID, p.Name, s.BusinessEntityID, s.Name", supplier_node);
-
-                Statement st2 = con.createStatement();
-                ResultSet rs2 = st2.executeQuery(query2);
-                
-                while(rs2.next()){
+                    // add the node to our array and increment counter
+                    nodelist[childID] = node_counter;
+                    node_counter++;
                     
-                    part_counter++;
-                    //(
-                    assembly1_counter++;
-                    assembly2_counter++;
-                    //)
-                    String part_node = rs2.getString("Name");
-                    int assembly_id = rs2.getInt("ProductID");
+                    // then add edge between 
+                    // insert edge between C and P
+                    JSONObject edge = new JSONObject();
+                    edge.put("source", nodelist[childID]);                
+                    edge.put("target", array_status_parent);
+                    edge.put("type", "IsPartOf");
+                    edge_array.put(edge);
+                }
+                // Condition 3: C exists, P is a new node
+                else if ((array_status_child > 0) && (array_status_parent < 0)){
+                    // add P as a node
+                    JSONObject item = new JSONObject();
+                    item.put("name", parentName);  
+                    item.put("id", parentID);
+                    item.put("type", "part");
+                    node_array.put(item);
                     
-                    // add node first:
-                    JSONObject part_item = new JSONObject();
-                    part_item.put("name", part_node);                
-                    part_item.put("type", "part");
-                    node_array.put(part_item);
-
-                    // then add edge connecting to it:
-                    JSONObject part_edge = new JSONObject();
-                    part_edge.put("source", part_counter);                
-                    part_edge.put("target", supplier_counter);
-                    part_edge.put("type", "SuppliedFrom");
-                    edge_array.put(part_edge);
+                    // add the node to our array and increment counter
+                    nodelist[parentID] = node_counter;
+                    node_counter++;
                     
-                    System.out.printf("   Part added: %s -> %d\n", part_node, part_counter);
-                    
-                    if (assembly_id == 938 || assembly_id == 939){
-                        // level 2 product, just add once
-                        
-                        // Add the associated products for each supplier
-                        String query3 = String.format(" SELECT p2.ProductID, p2.Name\n" +
-                            " FROM dbo.Product p1, dbo.Product p2, dbo.IsPartOf partOf\n" +
-                            " WHERE MATCH (p1-(partOf)->p2)\n" +
-                            " AND p1.ProductID = '%d'\n" +
-                            " ORDER BY p2.ProductID, p2.Name", assembly_id);
-                        
-                        Statement st3 = con.createStatement();
-                        ResultSet rs3 = st3.executeQuery(query3);
-                        
-                        while(rs3.next()){
-                            
-                            String assembly1_node = rs3.getString("Name");
-                            int assembly1_pid = rs3.getInt("ProductID");
-                            
-                            int nodeCheck = SearchIDList.ListSearch(assembly1_pid, product_list);
-                            // if the node is already in the array, only add the edge
-                            /*
-                            if ((list_ind != 0) && (nodeCheck >= 0)){
-                                System.out.printf("   DETECTED DUPLICATE %d, %d\n", assembly1_pid, edge_list[nodeCheck]);
-                                // then add edge connecting to it: from edge_list[nodeCheck]
-                                JSONObject assembly1_edge = new JSONObject();
-                                assembly1_edge.put("source", assembly1_counter);                
-                                assembly1_edge.put("target", edge_list[nodeCheck]);
-                                assembly1_edge.put("type", "IsPartOf");
-                                edge_array.put(assembly1_edge);
-                            }
-                            else{
-                            */
-                                assembly1_counter++;
-                            
-                                //(
-                                assembly2_counter++;
-                                //)
-                                // add node first:
-                                JSONObject assembly1_item = new JSONObject();
-                                assembly1_item.put("name", assembly1_node);                
-                                assembly1_item.put("type", "L1Assembly");
-                                node_array.put(assembly1_item);
-
-                                // then add edge connecting to it:
-                                JSONObject assembly1_edge = new JSONObject();
-                                assembly1_edge.put("source", part_counter);                
-                                assembly1_edge.put("target", assembly1_counter);
-                                assembly1_edge.put("type", "IsPartOf");
-                                edge_array.put(assembly1_edge);
-                                
-                                product_list[list_ind] = assembly1_pid;
-                                edge_list[list_ind] = assembly1_counter;
-                                
-                                list_ind++;
-                                
-                                System.out.printf("      Assembly1 added: %s -> %d, %d\n", assembly1_node, assembly1_counter, assembly1_pid);
-                            //}
-                            
-                        }
-                        
-                    }
-                    
-                    else {
-                        
-                        // Add the associated products for each supplier
-                        String query4 = String.format("   SELECT p2.ProductID, p2.Name\n" +
-                            " FROM dbo.Product p1, dbo.Product p2, dbo.IsPartOf partOf1\n" +
-                            " WHERE MATCH (p1-(partOf1)->p2)\n" +
-                            " AND p1.ProductID = '%d'\n" +
-                            " ORDER BY p2.ProductID, p2.Name", assembly_id);
-                        
-                        Statement st4 = con.createStatement();
-                        ResultSet rs4 = st4.executeQuery(query4);
-                        
-                        while(rs4.next()){
-                            String assembly2_node = rs4.getString("Name");
-                            int L1_assembly_id = rs4.getInt("ProductID");
-                            
-                            int nodeCheck2 = SearchIDList.ListSearch(L1_assembly_id, product_list);
-                            
-                            /*if ((list_ind != 0) && (nodeCheck2 >= 0)){
-                                System.out.printf("   DETECTED DUPLICATE %d, %d\n", L1_assembly_id, edge_list[nodeCheck2]);
-
-                                // then add edge connecting to it: from edge_list[nodeCheck]
-                                JSONObject assembly2_edge = new JSONObject();
-                                assembly2_edge.put("source", assembly1_counter);                
-                                assembly2_edge.put("target", edge_list[nodeCheck2]);
-                                assembly2_edge.put("type", "IsPartOf");
-                                edge_array.put(assembly2_edge);
-                            }
-                            else { */
-                                //System.out.printf("  in else\n");
-                                assembly1_counter++;
-                                //(
-                                assembly2_counter++;
-                                //)
-
-                                // add node first:
-                                JSONObject assembly2_item = new JSONObject();
-                                assembly2_item.put("name", assembly2_node);                
-                                assembly2_item.put("type", "L2Assembly");
-                                node_array.put(assembly2_item);
-
-                                // then add edge connecting to it:
-                                JSONObject assembly2_edge = new JSONObject();
-                                assembly2_edge.put("source", part_counter);                
-                                assembly2_edge.put("target", assembly1_counter);
-                                assembly2_edge.put("type", "IsPartOf");
-                                edge_array.put(assembly2_edge);
-                                
-                                product_list[list_ind] = L1_assembly_id;
-                                edge_list[list_ind] = assembly1_counter;
-                                
-                                list_ind++;
-
-                                System.out.printf("      Assembly2(else) added: %s -> %d, %d\n", assembly2_node, assembly1_counter, L1_assembly_id);
-
-                                String query5 = String.format("   SELECT p2.ProductID, p2.Name\n" +
-                                " FROM dbo.Product p1, dbo.Product p2, dbo.IsPartOf partOf1\n" +
-                                " WHERE MATCH (p1-(partOf1)->p2)\n" +
-                                " AND p1.ProductID = '%d'\n" +
-                                " ORDER BY p2.ProductID, p2.Name", L1_assembly_id);
-
-                                Statement st5 = con.createStatement();
-                                ResultSet rs5 = st5.executeQuery(query5);
-
-                                while(rs5.next()){
-                                    
-                                    String assembly3_node = rs5.getString("Name");
-                                    int L2_assembly_id = rs5.getInt("ProductID");
-                                    /*
-                                    int nodeCheck3 = SearchIDList.ListSearch(L2_assembly_id, product_list);
-                                    
-                                    if ((list_ind != 0) && (nodeCheck3 >= 0)){
-                                        System.out.printf("   DETECTED DUPLICATE %d, %d\n", L2_assembly_id, edge_list[nodeCheck3]);
-
-                                        // then add edge connecting to it: from edge_list[nodeCheck]
-                                        JSONObject assembly3_edge = new JSONObject();
-                                        assembly3_edge.put("source", assembly2_counter);                
-                                        assembly3_edge.put("target", edge_list[nodeCheck3]);
-                                        assembly3_edge.put("type", "IsPartOf");
-                                        edge_array.put(assembly3_edge);
-
-                                    }
-                                    else{
-                                        */
-                                        assembly2_counter++;
-                                        // add node first:
-                                        JSONObject assembly3_item = new JSONObject();
-                                        assembly3_item.put("name", assembly3_node);                
-                                        assembly3_item.put("type", "L1Assembly");
-                                        node_array.put(assembly3_item);
-
-                                        // then add edge connecting to it:
-                                        JSONObject assembly3_edge = new JSONObject();
-                                        assembly3_edge.put("source", assembly2_counter);                
-                                        assembly3_edge.put("target", assembly1_counter);
-                                        assembly3_edge.put("type", "IsPartOf");
-                                        edge_array.put(assembly3_edge);
-                                        
-                                        product_list[list_ind] = L2_assembly_id;
-                                        edge_list[list_ind] = assembly2_counter;
-                                
-                                        list_ind++;
-
-                                        System.out.printf("         Assembly3(else) added: %s -> %d, %d\n", assembly3_node, assembly2_counter, L2_assembly_id);
-                                    //}
-                                }
-                            
-                            //} //end else
-                            assembly1_counter = assembly2_counter;
-                            
-                        }
-                        
-                    }
-                    
-                    part_counter = assembly1_counter;
+                    // then add edge between 
+                    // insert edge between C and P
+                    JSONObject edge = new JSONObject();
+                    edge.put("source", array_status_child);                
+                    edge.put("target", nodelist[parentID]);
+                    edge.put("type", "IsPartOf");
+                    edge_array.put(edge);
                 }
                 
-                supplier_counter = part_counter;
+                // Condition 4: Neither C or P exist yet
+                else if ((array_status_child < 0) && (array_status_parent < 0)){
+                    // add C as a node
+                    JSONObject node = new JSONObject();
+                    node.put("name", childName);  
+                    node.put("id", childID);
+                    node.put("type", "part");
+                    node_array.put(node);
+                    
+                    // add the node to our array and increment counter
+                    nodelist[childID] = node_counter;
+                    node_counter++;
+                    
+                    // add P as a node
+                    JSONObject item = new JSONObject();
+                    item.put("name", parentName);  
+                    item.put("id", parentID);
+                    item.put("type", "part");
+                    node_array.put(item);
+                    
+                    // add the node to our array and increment counter
+                    nodelist[parentID] = node_counter;
+                    node_counter++;
+                    
+                    // then add edge connecting to it:
+                    JSONObject edge = new JSONObject();
+                    edge.put("source", nodelist[childID]);                
+                    edge.put("target", nodelist[parentID]);
+                    edge.put("type", "IsPartOf");
+                    edge_array.put(edge);
+                }
+                
             }
-            
-            
- 
+
             json.put("nodes", node_array);
             json.put("links", edge_array);
             
@@ -959,8 +815,6 @@ public class FXMLDocumentController implements Initializable {
         }
         
     }
-    
-
 }
 
 
