@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel = "stylesheet"
+   type = "text/css"
+   href = "style.css" />
+<style>
+.col-leftschema {
+    width: 49%;
+    float: left;
+    margin-left: auto;
+    margin-right: 10px
+}
+
+.col-middle{
+    width: 2%
+}
+.col-rightschema {
+    width: 49%;
+    float: right;
+    margin-left: 10px;
+    margin-right: auto
+}
+</style>
+<div class="header">
+    <img class = "headerpic" src="Images/MSSQL_logo.png" alt="MSSQL" style="width:46px;height:50px;">
+    <h1>SQL Graph Visualizations</h1>
+    <h2>Adventure Works Bicycle Database Schema</h2>
+</div>
+
+<div class="col-leftschema">
+        <h3> Description </h3>
+        <img class = "schema" src="Images/AdventureWorksLogo.png" alt="AdventureWorks" style = "width: 250px; height:75px">
+        <p id = "p2">
+            Adventure Works Bicycle, Inc. is a fictional bicycle wholesaler that manufactures and sells bicycles. Its supply-chain network includes raw material suppliers, customers, bicycle parts (including assemblies), and the company’s employees.
+        </p>
+        <p id = "p2">
+            This scenario demonstrates the usefulness of SQL Graph in real-world enterprise applications including its multi-hop and hierarchical query abilities.            
+        </p>
+        <p id = "p3" style = "color:#008080">
+            Visualization graphs in each scenario are interactive. Hover over individual nodes to see a label. Click and drag to highlight and fix a node. Re-click the node to unfix.             
+        </p>
+        <p id = "p3" style = "color:#008080">
+            Click the links below to explore this scenario, or click 'next' to explore in order. 
+        </p>
+        <br><br>
+
+        <p style="text-align: center"> _____________________________________________________</p> <br>
+    
+    <h5>
+        <a href="MatchMeeting.html" style = "color:#330F53; font-weight: 600; font-size: 20px">MATCH: In-Person Meeting</a> |
+        <a href="MatchParts.html" style = "color:#330F53; font-weight: 600; font-size: 20px">MATCH: Recall Products</a> |
+        <a href="MatchCustomers.html" style = "color:#330F53; font-weight: 600; font-size: 20px">MATCH: Recall Customers</a> 
+    </h5>
+    <h5>
+        <a href="RecurPart.html" style = "color:#330F53; font-weight: 600; font-size: 20px">RECURSION: Dependent Assemblies</a> |
+        <a href="RecurFull.html" style = "color:#330F53; font-weight: 600; font-size: 20px">RECURSION: Full BOM</a> |
+        <a href="AdditionalResources" style = "color:#330F53; font-weight: 600; font-size: 20px">Additional Resources</a> |
+        <a href="MatchMeeting.html" style = "color:green; font-weight: 600; font-size: 20px">NEXT</a>
+    </h5>
+    <br>
+</div>
+
+<div class="col-rightschema">
+    <h3> Schema Diagram </h3>
+    <img class = "schema" src="Images/BikeSchema.png" alt="schema" style="width:620px;height:720px;">
+</div>

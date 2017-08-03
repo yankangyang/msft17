@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel = "stylesheet"
+   type = "text/css"
+   href = "style.css" />
+<style>
+.node.location {
+  fill: midnightblue;
+}
+.node.customer {
+  fill: purple;
+}
+
+.link.LocatedIn {
+  stroke: #888;
+}
+
+</style>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+
+<div class="header">
+    <img class = "headerpic" src="MicrosoftSQLServer2.png" alt="MSSQL" style="width:46px;height:50px;">
+    <h1>SQL Graph Visualizations</h1>
+    <h2>MATCH Scenario: In-Person Meeting</h2>
+</div>
+
+
+<div class="col-left" id = "container">
+    <script>
+        
+    var width = 900,
+        height = 800;
+
+    var force = d3.layout.force()
+        .size([width, height])
+        .charge(-400)
+        .linkDistance(100)
+
+    var drag = force.drag()
+        .on("dragstart", dragstart);
+
+    var svg = d3.select("#container").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    d3.json("match2.json", function(error, graph) {
+      if (error) throw error;
+
+      force
+          .nodes(graph.nodes)
+          .links(graph.links)
+          .start();
+
+      var link = svg.selectAll(".link")
+        .data(graph.links)
+        .enter().append("line")
+        //.attr("class", "link")
+        .attr("class", function(d) { return "link " + d.type; })
+        .attr("marker-end", "url(#arrowhead)");
+
+
+      var node = svg.selectAll(".node")
+        .data(graph.nodes)
+        .enter().append("circle")
+          .attr("class", function(d) { return "node " + d.type; })
+          .attr("r", 14)
+          .on("dblclick", dblclick)
+          .call(drag);
+
+      var text = svg.selectAll(".text")
+        .data(graph.nodes)
+        .enter()
+        .append("text")
+        .attr("dx", 15)
+        .attr("dy", ".35em")
+
+      node.append("title")
+          .text(function(d) { return d.name; });
+
+      text.style("fill", "#000000")
+               .attr("width", "10")
+         .attr("height", "10")
+         .text(function(d) { return d.name; });
+
+      var edgepaths = svg.selectAll(".edgepath")
+            .data(graph.links)
+            .enter()
+            .append('path')
+            .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+                   'class':'edgepath',
+                   'fill-opacity':0,
+                   'stroke-opacity':0,
+                   'fill':'blue',
+                   'stroke':'red',
+                   'id':function(d,i) {return 'edgepath'+i}})
+            .style("pointer-events", "none");
+
+        svg.append('defs').append('marker')
+            .data(["LocatedIn"])
+            .attr({'id':'arrowhead',
+                   'viewBox':'-0 -5 10 10',
+                   'refX':25,
+                   'refY':0,
+                   'orient':'auto',
+                   'markerWidth':5,
+                   'markerHeight':5,
+                   'xoverflow':'visible'})
+            .append('svg:path')
+                .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+                .attr("class", function(d) { return "link";})
+
+
+      force.on("tick", function() {
+        link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+        node.attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+
+        text.attr("x", function(d) { return d.x; })
+            .attr("y", function(d) { return d.y; });  
+
+        edgepaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+            return path});     
+      });
+
+    });
+
+    function dblclick(d) {
+      d3.select(this).classed("fixed", d.fixed = false);
+    }
+
+    function dragstart(d) {
+      d3.select(this).classed("fixed", d.fixed = true);
+    }
+    
+    </script>   
+    
+    <img class = "keypic" src="match1key.png" alt="Match1Key" style = "width: 530px; height:30px">
+</div>
+
+<div class="col-right">
+      <h3> Scenario </h3>
+        <p id = "p2">
+            Joe is missing a Front Derailleur Cage (Product ID: 351) and two Chainring Nuts (Product ID: 321) on his 300-series Black Mountain Bike. Diana is missing a wheel spoke (Product ID: 527) on her 250-series Road Bike. They have contacted AWB to replace the parts. </p>
+        <p id = "p2">
+            Adventure Works Bicycle, Inc. can use a MATCH query on their SQL graph database to quickly find all suppliers who can to ship the missing part to the customer.         </p>
+        <br>
+    <h3> SQL Query </h3>
+    <p id = "p1">
+        <span style = "color:blue">SELECT</span> c.StoreName <span style = "color:gray">AS</span> 'Client', e.FirstName, e.LastName, e.JobTitle <span style = "color:gray">AS</span> 'Title', e.TerritoryID, l.Name <span style = "color:gray">AS</span> 'Region', l.CountryRegionCode <span style = "color:gray">AS</span> 'Country'
+    </p>    
+    <p id = "p1">   
+        <span style = "color:blue"> FROM </span> dbo.Employee e, dbo.Location l, dbo.LocatedIn lin, dbo.Customer c, dbo.LocatedIn lin2
+    </p>
+    <p id = "p1">
+        <span style = "color:blue">WHERE MATCH </span>(e-(lin)->l<-(lin2)-c)  
+    </p>
+    <p id = "p1">
+        <span style = "color:blue">AND </span>(c.StoreName = <span style = "color:red">'Endurance Bikes'</span> OR <span style = "color:red">c.StoreName = 'All Cycle Shop'</span>)
+    </p>
+    <p id = "p1">
+        <span style = "color:blue">ORDER BY </span> c.StoreName
+    </p>
+    <br>
+    <h3> Sample of Queried Data </h3>
+    <table>
+        <tr>
+          <th>Client</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Title</th>
+          <th>TerritoryID</th>
+          <th>Region</th>
+          <th>Country</th>
+        </tr>
+        <tr>
+            <td>All Cycle Shop</td>	
+            <td>Sheela</td>	
+            <td>Word</td>	
+            <td>Purchasing Manager</td>	
+            <td>1</td>	
+            <td>Northwest</td>	
+            <td>US</td>
+        </tr>
+        <tr>
+          <td>All Cycle Shop</td>	
+          <td>Mikael</td>	
+          <td>Sandberg</td>	
+          <td>Buyer</td>	
+          <td>1</td>	
+          <td>Northwest</td>	
+          <td>US</td>
+        </tr>
+        <tr>
+          <td>All Cycle Shop</td>	
+          <td>Michael</td>	
+          <td>Blythe</td>	
+          <td>Sales Representative</td>
+          <td>1</td>	
+          <td>Northwest</td>	
+          <td>US</td>
+        </tr>
+        <tr>
+          <td>Endurance Bikes</td>	
+          <td>Laura</td>	
+          <td>Norman</td>	
+          <td>Chief Financial Officer</td>	
+          <td>2</td>	
+          <td>Northeast</td>	
+          <td>US</td>
+        </tr>
+        <tr>
+          <td>Endurance Bikes</td>	
+          <td>Linda</td>	
+          <td>Mitchell</td>	
+          <td>Sales Representative</td>	
+          <td>2</td>	
+          <td>Northeast</td>	
+          <td>US</td>
+        </tr>
+        <tr>
+          <td>Endurance Bikes</td>	
+          <td>Garrett</td>	
+          <td>Vargas</td>	
+          <td>Sales Representative</td>	
+          <td>2</td> 
+          <td>Northeast</td>	
+          <td>US</td>
+        </tr>
+      </table>
+    <br>
+</div>
+</div>
+
+</body>
+</html>

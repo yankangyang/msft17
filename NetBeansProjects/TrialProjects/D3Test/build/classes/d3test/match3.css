@@ -1,0 +1,230 @@
+header{
+    background-color: #373647;
+}
+
+body{
+    background-color: white;
+}
+
+.link {
+  fill: #999;
+  stroke: #999;
+  stroke-width: 1.5px;
+}
+
+.link.LocatedIn {
+  stroke: #CBD7B8;
+}
+
+.link.SuppliedFrom {
+  stroke: #BC8F8F;
+}
+
+.link.IsPartOf {
+  stroke: #999;
+}
+
+.link.Bought {
+  stroke: #DEB887;
+
+}
+
+.edgepath.LocatedIn {
+  stroke: #999;
+}
+
+.node {
+  cursor: move;
+  fill: #ccc;
+  r: 6;
+  stroke: #888;
+  stroke-width: 1.5px;
+}
+
+.node.L1Assembly {
+  fill: midnightblue;
+}
+.node.supplier {
+  fill: green;
+}
+
+
+.node.L2Assembly {
+  fill: #4295f4;
+}
+
+.node.part {
+  fill: #AED6F1;
+}
+
+.node.customer {
+  fill: #EBDEF0;
+  	
+}
+
+.node.location {
+  r: 12;
+  fill: #FA8072;
+}
+
+.node text {
+  display: none;
+  font: 14px sans-serif;
+  color: #f00;
+  stroke: #f00;
+}
+
+.node:hover circle {
+  fill: #ffff00;
+}
+
+.node:hover text {
+  display: inline;
+    fill: #f00;
+   stroke: #f00
+}
+
+.cell {
+  fill: none;
+   color: #f00;
+  pointer-events: all;
+}
+
+img.headerpic {
+    display: block;
+    margin-left: auto;
+    margin-right: auto }
+
+h1 {
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 32px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 25px;
+        text-align: center;
+        color: white;
+    }
+    
+h2 {
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 24px;
+	font-style: bold;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 26.4px;
+        text-align: center;
+        color: orange;
+    }
+    
+h3 {
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 22px;
+	font-style: bolder;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 50px;
+        text-align: center;
+        color: #ddd;
+        background-color: #6f0038;
+    }
+
+    h5 {
+        font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+        font-size: 24px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 1000;
+	margin-bottom: 2px;
+        text-align: center;
+        color: gray;	
+
+    }
+a{
+    	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 18px;
+	font-style: bold;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 10px;
+        display: inline; 
+}
+    
+p#p1 {
+	font-family: "Lucida Sans Typewriter";
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 18px;
+        text-align: left;
+        
+    }
+    
+    p#p2 {
+        font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 22px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 30px;
+        text-align: left;
+        
+    }
+    
+#querydiv{
+    width:850px;
+    height:700px;
+    margin-right:10px;
+    margin-left:10px;
+    float: right;
+    
+}
+.child_div_1{
+    float:left;
+    margin-right:5px;
+}
+
+#keydiv{
+    width:850px;
+    height:100px;
+    margin-right:10px;
+    float: left;
+}
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

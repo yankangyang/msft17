@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel = "stylesheet"
+   type = "text/css"
+   href = "style.css" />
+<style>
+.col-leftschema {
+    width: 49%;
+    float: left;
+    margin-left: auto;
+    margin-right: 10px
+}
+
+.col-middle{
+    width: 2%
+}
+.col-rightschema {
+    width: 49%;
+    float: right;
+    margin-left: 10px;
+    margin-right: auto
+    
+}
+.description-left {
+    width: 80%;
+    float: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.description-right {
+    width: 20%;
+    float: right;
+    margin-left: auto;
+    margin-right: auto
+}
+
+</style>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+
+<div class="header">
+    <img class = "headerpic" src="Images/MSSQL_Logo.png" alt="MSSQL" style="width:46px;height:50px;">
+    <h1>SQL Graph Visualizations</h1>
+    <h2>Additional Scenarios and Resources</h2>
+</div>
+
+<div class="col-leftschema">
+    <h3> Supported Queries </h3>
+    <h6> Shortest Path on Restaurant Review Dataset </h6>
+    <p id ="p2"> SQL Server 2017 supports shortest path queries and topological sort. Stay tuned for a demo! </p>
+
+        
+    <br><br>    
+    <h3> Database-to-Visualization Resources </h3>
+    <div class="description-left">
+        <h6>Java/JavaFX Demonstration</h6>
+        <p id ="p2"> In this Java application, we demonstrate how to connect to a SQL Graph database using JDBC and generate JSON objects to pass to D3 scripts. </p>
+        <!-- <p id ="p2"> Insert link to github here </p> -->
+        <h6> Node.js Demonstration</h6>
+        <p id ="p2"> In our prototype Node.js application, we connect to a SQL Graph database and pass the data generated directly into a D3 file without the use of stand-alone JSON data files. </p>
+        <!-- <p id ="p2"> Insert link to github here </p> -->
+    </div>
+    <div class="description-right">
+        <img src="Images/JavaLogo.png" alt="JavaLogo" style = "width: 160px; height:160px">
+        <img src="Images/NodeLogo.png" alt="NodeLogo" style = "width: 160px; height:100px">
+    </div>
+        
+</div>
+
+<div class="col-rightschema">
+    <h3> Real-Product Scenarios </h3>
+    <h6> Xbox One Supply Chain </h6>
+    <img class = "keypic" src="Images/XboxOneLogo.png" alt="XboxLogo" style = "width: 530px; height:180px">
+    <p id ="p2"> Check out another scenario using Xbox One's real supply-chain and database queries! </p>
+
+    <br>
+    <p style="text-align: center"> _____________________________________________________</p>
+    
+    <h5>
+        <a href="AWBSupplyChainScenario.html" style = "color:#330F53; font-weight: 600; font-size: 20px">AWB Schema</a> |
+        <a href="MatchMeeting.html" style = "color:#330F53; font-weight: 600; font-size: 20px">MATCH: In-Person Meeting</a> |
+        <a href="MatchParts.html" style = "color:#330F53; font-weight: 600; font-size: 20px">MATCH: Recall Products</a> |
+        
+    </h5>
+    <h5>
+        <a href="MatchCustomers.html" style = "color:#330F53; font-weight: 600; font-size: 20px">MATCH: Recall Customers</a> |
+        <a href="RecurPart.html" style = "color:#330F53; font-weight: 600; font-size: 20px">RECURSION: Dependent Assemblies</a> |
+        <a href="RecurFull.html" style = "color:#330F53; font-weight: 600; font-size: 20px">RECURSION: Full BOM</a> 
+    </h5>
+    <br>
+</div>
+
+</body>
+</html>

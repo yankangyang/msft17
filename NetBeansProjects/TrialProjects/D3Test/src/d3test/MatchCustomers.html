@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+ <link rel = "stylesheet"
+   type = "text/css"
+   href = "style.css" />
+ 
+<style>
+.node.customer {
+  fill: #EBDEF0;
+  	
+}
+.node.location {
+  r: 12;
+  fill: #FA8072;
+}
+
+.node.fixed {
+  fill: #f00;
+}
+
+.node text {
+  display: none;
+  font: 14px sans-serif;
+  color: #f00;
+  stroke: #f00;
+}
+
+.node:hover circle {
+  fill: #ffff00;
+}
+
+.node:hover text {
+  display: inline;
+    fill: #f00;
+   stroke: #f00
+}
+
+.node.L1Assembly {
+  fill: midnightblue;
+}
+</style>
+ 
+<div class="header">
+    <img class = "headerpic" src="MicrosoftSQLServer2.png" alt="MSSQL" style="width:46px;height:50px;">
+    <h1>SQL Graph Visualizations</h1>
+    <h2>MATCH Scenario: Recall Customers</h2>
+</div>
+
+<body>
+   
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<div class="col-left" id = "container">
+    <script>
+
+    var width = 900,
+        height = 850;
+
+    var force = d3.layout.force()
+        .size([width, height])
+        .charge(-70)
+        .linkDistance(60)
+
+    var drag = force.drag()
+        .on("dragstart", dragstart);
+
+    var svg = d3.select("#container").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    var voronoi = d3.geom.voronoi()
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; })
+        .clipExtent([[0, 0], [width, height]]);
+
+    d3.json("match3.json", function(error, graph) {
+      if (error) throw error;
+
+      force
+          .nodes(graph.nodes)
+          .links(graph.links)
+          .start();
+
+      var link = svg.selectAll(".link")
+        .data(graph.links)
+        .enter().append("line")
+        .attr("class", function(d) { return "link " + d.type; })
+        .attr("marker-end", "url(#arrowhead)");
+
+      var node = svg.selectAll(".node")
+        .data(graph.nodes)
+        .enter().append("g")
+          .attr("class", function(d) { return "node " + d.type; })
+          .attr("r", function(d) { return "node " + d.type; })
+          .on("dblclick", dblclick)
+          .call(drag);
+
+        var cell = node.append("path")
+          .attr("class", "cell");
+
+        var text = node.append("text")
+          .attr("dy", ".35em")
+          .text(function(d) { return d.name; });
+
+        var circle = node.append("circle")
+          .attr("r", 6);
+
+
+      var edgepaths = svg.selectAll(".edgepath")
+            .data(graph.links)
+            .enter()
+            .append('path')
+            .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+                   'class':'edgepath',
+                   'fill-opacity':0,
+                   'stroke-opacity':0,
+                   'fill':'blue',
+                   'stroke':'red',
+                   'id':function(d,i) {return 'edgepath'+i}})
+            .style("pointer-events", "none");
+
+        svg.append('defs').append('marker')
+            .data(["LocatedIn"])
+            .attr({'id':'arrowhead',
+                   'viewBox':'-0 -5 10 10',
+                   'refX':25,
+                   'refY':0,
+                   'orient':'auto',
+                   'markerWidth':3,
+                   'markerHeight':3,
+                   'xoverflow':'visible'})
+            .append('svg:path')
+                .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+                .attr("class", function(d) { return "link";})
+
+
+      force.on("tick", function() {
+        cell
+            .data(voronoi(graph.nodes))
+
+        link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+
+        circle.attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+
+        text.attr("x", function(d) { return d.x + 5; })
+            .attr("y", function(d) { return d.y; });  
+
+        edgepaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+            return path});
+
+
+
+      });
+
+    });
+
+    function dblclick(d) {
+      d3.select(this).classed("fixed", d.fixed = false);
+    }
+
+    function dragstart(d) {
+      d3.select(this).classed("fixed", d.fixed = true);
+    }
+
+    </script>
+    
+    <img class = "keypic" src="matchcustomerkey.png" alt="MatchCustPic" style = "width: 740px; height:80px">
+</div>
+
+<div class="col-right">
+        <h3> Scenario </h3>
+        <p id = "p2">
+            Find all the Customers who bought a bike during and up to a week after the recall-inducing heat wave in the Southwest US. </p>
+         <p id = "p2">   AWB can identify these customers quickly to contact them about possible replacements. </p>
+        <br>
+        
+    <h3> SQL Query </h3>
+    <p id = "p1">
+        <span style = "color:blue; ">SELECT</span> c.CustomerID, c.PersonID, c.StoreID, c.TerritoryID, c.StoreName, c.Title, c.First, c.Middle, c.Last, c.Suffix, p.ProductID, p.Name, bb.ShipDate
+    </p>
+    <p id = "p1">
+        <span style = "color:blue; "> FROM </span> dbo.Customer c, dbo.BoughtBy bb, dbo.Product p
+    </p>
+    <p id = "p1">
+        <span style = "color:blue; ">WHERE MATCH </span>(p-(bb)->c)
+    </p>
+    <p id = "p1">
+        <span style = "color:gray">AND </span> (p.ProductID <span style = "color:gray">BETWEEN</span> 749 <span style = "color:gray">AND </span>801 <span style = "color:gray">OR </span> p.ProductID <span style = "color:gray">BETWEEN</span> 953 <span style = "color:gray">AND</span> 993 <span style = "color:gray">OR</span> p.ProductID <span style = "color:gray">BETWEEN </span> 997 <span style = "color:gray">AND</span> 999)
+    </p>
+    <p id = "p1">
+        <span style = "color:gray">AND </span> bb.ShipDate <span style = "color:gray"> BETWEEN </span><span style = "color:red"> '2013-08-13 00:00:00.000' </span><span style = "color:gray"> AND </span> <span style = "color:red">'2013-08-31 00:00:00.000'</span>
+    </p>
+    <p id = "p1">
+        <span style = "color:blue">ORDER BY</span> bb.ShipDate 
+    </p>
+    <br>
+    <h3> Sample of Queried Data </h3>
+    <table>
+        <tr>
+          <th>CustomerID</th>
+          <th>TerritoryID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Product ID</th>
+          <th>Name</th>
+          <th>Ship Date</th>
+        </tr>
+        <tr>
+          <td>16894</td>
+          <td>1</td>
+          <td>Abigail</td>
+          <td>Walker</td>
+          <td>974</td>
+          <td>Road-350-W Yellow, 42</td>
+          <td>2013-08-14 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>12328</td>
+          <td>10</td>
+          <td>Eugene</td>
+          <td>Zhao</td>
+          <td>783</td>
+          <td>Mountain-200 Black, 42</td>
+          <td>2013-08-16 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>12125</td>
+          <td>8</td>
+          <td>Diana</td>
+          <td>Ortega</td>
+          <td>781</td>
+          <td>Mountain-200 Silver, 46</td>
+          <td>2013-08-18 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>22335</td>
+          <td>1</td>
+          <td>Anthony</td>
+          <td>Taylor</td>
+          <td>999</td>
+          <td>Road-750 Black, 52</td>
+          <td>2013-08-18 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>28828</td>
+          <td>4</td>
+          <td>Andrea</td>
+          <td>Murphy</td>
+          <td>962</td>
+          <td>Touring-3000 Yellow, 50</td>
+          <td>2013-08-23 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>11888</td>
+          <td>6</td>
+          <td>Aaron</td>
+          <td>Ross</td>
+          <td>780</td>
+          <td>Mountain-200 Silver, 42</td>
+          <td>2013-08-25 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>11582</td>
+          <td>7</td>
+          <td>Claudia</td>
+          <td>Ma</td>
+          <td>783</td>
+          <td>Mountain-200 Black, 42</td>
+          <td>2013-08-30 00:00:00.000</td>
+        </tr>
+      </table>
+</div>
+
+<!--<div id='keydiv'>
+    
+        <h5>
+        <a href="scehma.html" style = "color:navy">Home</a> |
+        <a href="match3.html" style = "color:navy">MATCH: Recall Customers</a> |
+        <a href="match3NC.html" style = "color:navy">MATCH: Recall Products</a> |
+        <a href="recursion-f.html" style = "color:navy">RECURSION: Full BOM</a> |
+        <a href="recursion-s.html" style = "color:navy">RECURSION: Dependent Assemblies</a> |
+        <a href="match3.html" style = "color:purple">NEXT</a>
+    </h5>
+</div>-->
+</body>

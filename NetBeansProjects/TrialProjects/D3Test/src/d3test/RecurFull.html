@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+ <link rel = "stylesheet"
+   type = "text/css"
+   href = "style.css" />
+ 
+<style>
+.node.Location {
+  r: 12;
+  fill: #FA8072;
+}
+
+.node.fixed {
+  fill: #f00;
+}
+
+.node text {
+  display: none;
+  font: 14px sans-serif;
+  color: #f00;
+  stroke: #f00;
+}
+
+.node:hover circle {
+  fill: #ffff00;
+}
+
+.node:hover text {
+  display: inline;
+    fill: #f00;
+   stroke: #f00
+}
+
+.node.part {
+  fill: midnightblue;
+}
+</style>
+ 
+<div class="header">
+    <img class = "headerpic" src="MicrosoftSQLServer2.png" alt="MSSQL" style="width:46px;height:50px;">
+    <h1>SQL Graph Visualizations</h1>
+    <h2>Recursive Scenario: Full BOM</h2>
+</div>
+   
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<div class="col-left" id = "container">
+<script>
+
+var width = 900,
+    height = 800;
+
+var force = d3.layout.force()
+    .size([width, height])
+    .charge(-90)
+    .linkDistance(100)
+
+var drag = force.drag()
+    .on("dragstart", dragstart);
+
+var svg = d3.select("#container").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+    
+var voronoi = d3.geom.voronoi()
+    .x(function(d) { return d.x; })
+    .y(function(d) { return d.y; })
+    .clipExtent([[0, 0], [width, height]]);
+
+d3.json("recursion-f.json", function(error, graph) {
+  if (error) throw error;
+
+  force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+      
+  var link = svg.selectAll(".link")
+    .data(graph.links)
+    .enter().append("line")
+    .attr("class", function(d) { return "link " + d.type; })
+    .attr("marker-end", "url(#arrowhead)");
+
+  var node = svg.selectAll(".node")
+    .data(graph.nodes)
+    .enter().append("g")
+      .attr("class", function(d) { return "node " + d.type; })
+      .attr("r", function(d) { return "node " + d.type; })
+      .on("dblclick", dblclick)
+      .call(drag);
+      
+    var cell = node.append("path")
+      .attr("class", "cell");
+      
+    var text = node.append("text")
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name; });
+      
+    var circle = node.append("circle")
+      .attr("r", 7);
+    
+
+  var edgepaths = svg.selectAll(".edgepath")
+        .data(graph.links)
+        .enter()
+        .append('path')
+        .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+               'class':'edgepath',
+               'fill-opacity':0,
+               'stroke-opacity':0,
+               'fill':'blue',
+               'stroke':'red',
+               'id':function(d,i) {return 'edgepath'+i}})
+        .style("pointer-events", "none");
+     
+    svg.append('defs').append('marker')
+        .data(["LocatedIn"])
+        .attr({'id':'arrowhead',
+               'viewBox':'-0 -5 10 10',
+               'refX':25,
+               'refY':0,
+               'orient':'auto',
+               'markerWidth':3,
+               'markerHeight':3,
+               'xoverflow':'visible'})
+        .append('svg:path')
+            .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+            .attr("class", function(d) { return "link";})
+
+      
+  force.on("tick", function() {
+    cell
+        .data(voronoi(graph.nodes))
+    
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+    
+  
+    circle.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+        
+    text.attr("x", function(d) { return d.x + 5; })
+        .attr("y", function(d) { return d.y; });  
+        
+    edgepaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+        return path});
+        
+  });
+    
+});
+
+function dblclick(d) {
+  d3.select(this).classed("fixed", d.fixed = false);
+}
+
+function dragstart(d) {
+  d3.select(this).classed("fixed", d.fixed = true);
+}
+
+</script>
+    
+    <img class = "keypic" src="recursion-f.png" alt="recursion-f_pic" style = "width: 370px; height:45px">
+</div>
+
+<div class="col-right">
+        <h3> Scenario </h3>
+        <p id = "p2">The visualization on the left shows the entire highly-connected supply-chain network for Adventure Works Bicycle, Inc. </p> 
+        <p id = "p2">Using variables in a query (such as in the Dependent Assemblies scenario) helps select a specific portion of this graph network.   </p>
+        
+    <h3> Recursive Query </h3>
+
+    <p id = "p1">
+	<p id = "p1"><span style = "color:green; ">-- Recursively find product assemblies.</span> </p>
+	<p id = "p1"><span style = "color:blue; ">WITH </span> BOM (ProductId, Name, ProductNumber, parentid, parentname) </p>
+	<p id = "p1"><span style = "color:blue; ">AS</span>
+        <p id = "p1">(</p>
+        <p id = "p1"><span style = "color:green; margin-left: 40px">-- First the anchor </span></p>
+	<p id = "p1"><span style = "color:blue; margin-left: 40px">SELECT </span>p0.ProductID, p0.Name, p0.ProductNumber, </p>
+	<p id = "p1"><span style = "margin-left: 70px">p1.ProductId parentid, p1.Name parentname </span></p>
+	<p id = "p1"><span style = "color:blue; margin-left: 40px"> FROM </span>Product p0, IsPartOf ipo, Product p1
+	<p id = "p1"><span style = "color:blue; margin-left: 40px"> WHERE MATCH </span>(p0-(ipo)->p1)
+        <p id = "p1"><span style = "color:green; margin-left: 40px">-- then the 'recursion' </span></p>
+        <p id = "p1"><span style = "color:blue; margin-left: 40px"> UNION</span> <span style = "color:gray">ALL</span> </p>
+        <p id = "p1"><span style = "color:blue; margin-left: 40px">SELECT</span> p2.ProductID, p2.Name, p2.ProductNumber, </p>
+        <p id = "p1"><span style = "margin-left: 70px">	p3.ProductId parentid, p3.Name parentname </p>
+        <p id = "p1"><span style = "color:blue; margin-left: 40px">FROM </span>BOM, IsPartOf ipo1, Product p2, Product p3 </p>
+        <p id = "p1"><span style = "color:blue; margin-left: 40px"> WHERE MATCH </span>(p2-(ipo1)->p3)</p>
+        <p id = "p1"><span style = "color:gray; margin-left: 40px"> AND </span>BOM.parentid = p2.ProductId </p>
+	<p id = "p1">)</p>
+        <p id = "p1"><span style = "color:blue; ">SELECT</span> ProductId, Name, ProductNumber, parentid, parentname </p>
+        <p id = "p1"><span style = "color:blue; ">FROM BOM</span></p>
+        <p id = "p1"><span style = "color:blue; ">GROUP BY</span> ProductID, Name, ProductNumber, parentID, parentname </p>
+        <p id = "p1"><span style = "color:blue; ">GO</span></p>
+    <h3> Sample of Queried Data </h3>
+    <table>
+        <tr>
+          <th>CustomerID</th>
+          <th>TerritoryID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Product ID</th>
+          <th>Name</th>
+          <th>Ship Date</th>
+        </tr>
+        <tr>
+          <td>16894</td>
+          <td>1</td>
+          <td>Abigail</td>
+          <td>Walker</td>
+          <td>974</td>
+          <td>Road-350-W Yellow, 42</td>
+          <td>2013-08-14 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>12328</td>
+          <td>10</td>
+          <td>Eugene</td>
+          <td>Zhao</td>
+          <td>783</td>
+          <td>Mountain-200 Black, 42</td>
+          <td>2013-08-16 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>12125</td>
+          <td>8</td>
+          <td>Diana</td>
+          <td>Ortega</td>
+          <td>781</td>
+          <td>Mountain-200 Silver, 46</td>
+          <td>2013-08-18 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>22335</td>
+          <td>1</td>
+          <td>Anthony</td>
+          <td>Taylor</td>
+          <td>999</td>
+          <td>Road-750 Black, 52</td>
+          <td>2013-08-18 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>28828</td>
+          <td>4</td>
+          <td>Andrea</td>
+          <td>Murphy</td>
+          <td>962</td>
+          <td>Touring-3000 Yellow, 50</td>
+          <td>2013-08-23 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>11888</td>
+          <td>6</td>
+          <td>Aaron</td>
+          <td>Ross</td>
+          <td>780</td>
+          <td>Mountain-200 Silver, 42</td>
+          <td>2013-08-25 00:00:00.000</td>
+        </tr>
+        <tr>
+          <td>11582</td>
+          <td>7</td>
+          <td>Claudia</td>
+          <td>Ma</td>
+          <td>783</td>
+          <td>Mountain-200 Black, 42</td>
+          <td>2013-08-30 00:00:00.000</td>
+        </tr>
+      </table>
+</div>
+
+<!--<div id='keydiv'>
+    
+        <h5>
+        <a href="scehma.html" style = "color:navy">Home</a> |
+        <a href="match3.html" style = "color:navy">MATCH: Recall Customers</a> |
+        <a href="match3NC.html" style = "color:navy">MATCH: Recall Products</a> |
+        <a href="recursion-f.html" style = "color:navy">RECURSION: Full BOM</a> |
+        <a href="recursion-s.html" style = "color:navy">RECURSION: Dependent Assemblies</a> |
+        <a href="match3.html" style = "color:purple">NEXT</a>
+    </h5>
+</div>-->

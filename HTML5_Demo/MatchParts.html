@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+ <link rel = "stylesheet"
+   type = "text/css"
+   href = "style.css" />
+<style>
+.node.fixed {
+  fill: #f00;
+}
+
+.node text {
+  display: none;
+  font: 14px sans-serif;
+  color: #f00;
+  stroke: #f00;
+}
+
+.node:hover circle {
+  fill: #ffff00;
+}
+
+.node:hover text {
+  display: inline;
+    fill: #f00;
+   stroke: #f00
+}
+
+.node.L1Assembly {
+  fill: midnightblue;
+}
+
+.node.location {
+  r: 12;
+  fill: #FA8072;
+}
+.left-data {
+    width: 50%;
+    float: left;
+    margin-left: auto;
+    margin-right: auto
+}
+.right-data {
+    width: 50%;
+    float: left;
+    margin-left: auto;
+    margin-right: auto
+}
+</style>
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<div class="header">
+    <img class = "headerpic" src="Images/MSSQL_Logo.png" alt="MSSQL" style="width:46px;height:50px;">
+    <h1>SQL Graph Visualizations</h1>
+    <h2>MATCH Scenario: Recall Parts</h2>
+</div>
+
+<body>
+<div class="col-left" id = "container">
+    <script>
+
+    var width = 850,
+        height = 850;
+
+    var force = d3.layout.force()
+        .size([width, height])
+        .charge(-40)
+        .linkDistance(40)
+
+    var drag = force.drag()
+        .on("dragstart", dragstart);
+
+    var svg = d3.select("#container").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    var voronoi = d3.geom.voronoi()
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; })
+        .clipExtent([[0, 0], [width, height]]);
+
+    d3.json("Data/MatchParts.json", function(error, graph) {
+      if (error) throw error;
+
+      force
+          .nodes(graph.nodes)
+          .links(graph.links)
+          .start();
+
+      var link = svg.selectAll(".link")
+        .data(graph.links)
+        .enter().append("line")
+        .attr("class", function(d) { return "link " + d.type; })
+        .attr("marker-end", "url(#arrowhead)");
+
+      var node = svg.selectAll(".node")
+        .data(graph.nodes)
+        .enter().append("g")
+          .attr("class", function(d) { return "node " + d.type; })
+          .attr("r", function(d) { return "node " + d.type; })
+          .on("dblclick", dblclick)
+          .call(drag);
+
+        var cell = node.append("path")
+          .attr("class", "cell");
+
+        var text = node.append("text")
+          .attr("dy", ".35em")
+          .text(function(d) { return d.name; });
+
+        var circle = node.append("circle")
+          .attr("r", 6);
+
+
+      var edgepaths = svg.selectAll(".edgepath")
+            .data(graph.links)
+            .enter()
+            .append('path')
+            .attr({'d': function(d) {return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+                   'class':'edgepath',
+                   'fill-opacity':0,
+                   'stroke-opacity':0,
+                   'fill':'blue',
+                   'stroke':'red',
+                   'id':function(d,i) {return 'edgepath'+i}})
+            .style("pointer-events", "none");
+
+        svg.append('defs').append('marker')
+            .data(["LocatedIn"])
+            .attr({'id':'arrowhead',
+                   'viewBox':'-0 -5 10 10',
+                   'refX':25,
+                   'refY':0,
+                   'orient':'auto',
+                   'markerWidth':3,
+                   'markerHeight':3,
+                   'xoverflow':'visible'})
+            .append('svg:path')
+                .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+                .attr("class", function(d) { return "link";})
+
+
+      force.on("tick", function() {
+        cell
+            .data(voronoi(graph.nodes))
+
+        link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+
+        circle.attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+
+        text.attr("x", function(d) { return d.x + 5; })
+            .attr("y", function(d) { return d.y; });  
+
+        edgepaths.attr('d', function(d) { var path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+            return path});
+
+      });
+
+    });
+
+    function dblclick(d) {
+      d3.select(this).classed("fixed", d.fixed = false);
+    }
+
+    function dragstart(d) {
+      d3.select(this).classed("fixed", d.fixed = true);
+    } 
+    
+    </script>
+    <img class = "keypic" src="Images/Key_MatchPart.png" alt="KMP" style = "width: 630px; height:80px">
+
+    <br>
+
+    <p style="text-align: center"> _____________________________________________________</p>
+    
+    <h5>
+        <a href="AWBSupplyChainScenario.html" style = "color:#330F53; font-weight: 600; font-size: 20px">AWB Schema</a> |
+        <a href="MatchMeeting.html" style = "color:#330F53; font-weight: 600; font-size: 20px">MATCH: In-Person Meeting</a> |
+        <a href="MatchCustomers.html" style = "color:#330F53; font-weight: 600; font-size: 20px">MATCH: Recall Customers</a> 
+    </h5>
+    <h5>
+        <a href="RecurPart.html" style = "color:#330F53; font-weight: 600; font-size: 20px">RECURSION: Dependent Assemblies</a> |
+        <a href="RecurFull.html" style = "color:#330F53; font-weight: 600; font-size: 20px">RECURSION: Full BOM</a> |
+        <a href="AdditionalResources" style = "color:#330F53; font-weight: 600; font-size: 20px">Additional Resources</a> |
+        <a href="MatchCustomers.html" style = "color:green; font-weight: 600; font-size: 20px">NEXT</a>
+    </h5>
+    <br>
+</div>
+
+<div class="col-right">   
+    <h3> Scenario </h3>
+
+    <p id = "p2">
+        The Southwest United States is hit by a heat wave that may damage certain types of parts. Adventure Works Bicycle wants to recall all parts and products potentially affected to ensure their integrity.  </p>
+    <p id = "p2">
+        Here, MATCH allows AWB to identify: suppliers to contact and parts/assemblies to recall.  </p>
+
+    <h3> SQL Query </h3>
+    <h4>Level 1 Assemblies (Bikes) Affected:</h4>
+    <p id = "p1">
+        <span style = "color:blue">SELECT</span> Product3.ProductID, Product3.Name
+        </p>
+    <p id = "p1">
+        <span style = "color:blue"> FROM </span> dbo.Product Product1, dbo.Product Product2, dbo.Product Product3, dbo.IsPartOf IsPartOf1, dbo.IsPartOf IsPartOf2
+        </p>
+    <p id = "p1">
+        <span style = "color:blue">WHERE MATCH </span>(Product1-(IsPartOf1)->Product2-(IsPartOf2)->Product3)
+        </p>
+    <p id = "p1">
+        <span style = "color:gray">AND </span> Product1.ProductID = <span style = "color:red">'322'</span> 
+        </p>
+    <p id = "p1">
+        <span style = "color:blue">GROUP BY</span> Product3.ProductID, Product3.Name
+    </p>
+
+    <h3> Sample of Queried Data </h3>
+    <div class = "left-data">
+    <h4>Suppliers:</h4>
+    <table>
+        <tr>
+          <th>BusinessID</th>
+          <th>Name</th>
+        </tr>
+        <tr>
+          <td>1494</td>
+          <td>Allenson Cycles</td>
+        </tr>
+        <tr>
+          <td>1540</td>
+          <td>Bergeron Off-Roads</td>
+        </tr>
+        <tr>
+          <td>1604</td>
+          <td>Bike Satellite Inc.</td>
+        </tr>
+        <tr>
+          <td>1536</td>
+          <td>Cruger Bike Company</td>
+        </tr>
+        <tr>
+          <td>1644</td>
+          <td>International Sport Assoc.</td>
+        </tr>
+        <tr>
+          <td>1680</td>
+          <td>Jackson Authority</td>
+        </tr>
+        <tr>
+          <td>1656</td>
+          <td>Mountain Works</td>
+        </tr>
+        <tr>
+          <td>1554</td>
+          <td>WestAmerica Bicycle Co.</td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class = "right-data">
+    <h4>Level 1 Assemblies (Bikes):</h4>
+    <table>
+        <tr>
+          <th>ProductID</th>
+          <th>Name</th>
+        </tr>
+        <tr>
+          <td>749</td>
+          <td>Road-150 Red, 62</td>
+        </tr>
+        <tr>
+          <td>757</td>
+          <td>Road-450 Red, 48</td>
+        </tr>
+        <tr>
+          <td>771</td>
+          <td>Mountain-100 Silver, 38</td>
+        </tr>
+        <tr>
+          <td>788</td>
+          <td>Mountain-300 Black, 48</td>
+        </tr>
+        <tr>
+          <td>799</td>
+          <td>Road-550-W Yellow, 42</td>
+        </tr>
+        <tr>
+          <td>953</td>
+          <td>Touring-2000 Blue, 60</td>
+        </tr>
+        <tr>
+          <td>977</td>
+          <td>Road-750 Black, 58</td>
+        </tr>
+        <tr>
+          <td>993</td>
+          <td>Mountain-500 Black, 52</td>
+        </tr>
+     </table>
+    </div>
+</div>
+
+</body>
